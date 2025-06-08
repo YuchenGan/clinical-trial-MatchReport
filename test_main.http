@@ -1,0 +1,19 @@
+POST http://localhost:8000/match_trials
+Content-Type: application/json
+
+{
+  "gender": "female",
+  "age_group": "40-64",
+  "diagnosed": true,
+  "cancer_types": ["lung cancer"],
+  "gene_mutation": "EGFR",
+  "metastasis_status": "oligometastatic",
+  "recent_surgery": false,
+  "ecog_score": "1",
+  "treatment_stage": "first-line",
+  "active_infection": false,
+  "recent_drugs": ["chemo"],
+  "health_conditions": ["cardiac"],
+  "upload_reports": false,
+  "consent_data_collection": true
+}

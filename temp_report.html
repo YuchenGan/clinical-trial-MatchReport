@@ -1,0 +1,3149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Trial Matching Report - Visual</title>
+
+    <!-- Chart.js for charts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <!-- Leaflet.js for interactive maps -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background-color: #f8f9ff;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+        }
+
+        /* FIXED: Better 3-column layout with consistent heights */
+        .visual-summary {
+            display: grid;
+            grid-template-columns: 380px 1fr 2fr;
+            gap: 20px;
+            margin-bottom: 35px;
+            height: 450px; /* Fixed height for alignment */
+        }
+
+        .chart-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            min-height: 450px; /* FIXED: Minimum height */
+        }
+
+        .chart-container h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+
+        /* FIXED: Medical Profile Card - Compact */
+        .medical-profile-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            min-height: 450px; /* FIXED: Minimum height to match other columns */
+        }
+
+        .profile-header {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e9ecef;
+            text-align: center;
+        }
+
+        .profile-section {
+            margin-bottom: 16px;
+            flex: 1;
+        }
+
+        .profile-section h4 {
+            color: #495057;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 3px;
+        }
+        
+        .profile-section:last-child {
+            margin-bottom: auto;
+        }
+
+        .profile-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.8em;
+        }
+
+        .profile-label {
+            color: #6c757d;
+        }
+
+        .profile-value {
+            color: #212529;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        /* FIXED: Compact Spotlight Section */
+        .spotlight-section {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .spotlight-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            gap: 8px;
+            justify-content: space-between; /* ADDED: Distribute content evenly */
+            min-height: 420px;
+        }
+
+
+        /* FIXED: Smaller spotlight feature */
+         .spotlight-feature {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 18px 25px; /* REDUCED padding */
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .spotlight-number {
+            font-size: 2.8em; /* REDUCED from 3.2em */
+            font-weight: bold;
+            margin-bottom: 4px;
+            animation: countUp 1s ease-out;
+        }
+        
+        .spotlight-label {
+            font-size: 1em; /* REDUCED from 1.1em */
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .spotlight-subtitle {
+            font-size: 0.85em; /* REDUCED from 0.9em */
+            opacity: 0.9;
+        }
+
+        /* FIXED: Better stats boxes layout */
+        .stats-boxes-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-shrink: 0;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px 6px; /* REDUCED padding */
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-number {
+            font-size: 1.3em; /* REDUCED from 1.4em */
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 3px;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.75em; /* REDUCED from 0.8em */
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 2px;
+            line-height: 1;
+        }
+        
+        .stat-subtitle {
+            font-size: 0.7em;
+            color: #6c757d;
+            line-height: 1;
+        }
+
+        .other-matches-chart {
+            flex: 1;
+            position: relative;
+            min-height: 180px;
+            padding: 8px 12px 30px 8px; /* ADDED: padding bottom and right for axis labels */
+            margin-bottom: 10px; /* ADDED: extra margin at bottom */
+            margin-top: 0;
+        }
+
+        @keyframes countUp {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Map Section Styles */
+        .map-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            min-height: 450px; /* FIXED: Minimum height */
+        }
+
+        .map-header {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .map-container {
+            flex: 1;
+            border-radius: 8px;
+            position: relative;
+            background: #f0f8ff;
+            overflow: hidden;
+            min-height: 320px;
+            border: 2px solid #e6f3ff;
+        }
+
+        /* Rest of your existing CSS... */
+        .map-container svg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .map-point {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .map-point:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            z-index: 10;
+        }
+
+        .map-point.patient {
+            background: #ff4444;
+            width: 24px;
+            height: 24px;
+            z-index: 10;
+        }
+
+        .map-point.trial {
+            background: #28a745;
+        }
+
+        .map-tooltip {
+            position: absolute;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            font-size: 0.8em;
+            display: none;
+            z-index: 20;
+            white-space: nowrap;
+        }
+
+        .map-legend {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: white;
+            padding: 10px 14px; /* CHANGED: horizontal padding increased */
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-size: 0.8em;
+            z-index: 15;
+            display: flex; /* ADDED: horizontal layout */
+            flex-direction: column; /* ADDED: stack rows vertically */
+            gap: 6px; /* ADDED: gap between rows */
+            width: fit-content; /* ADDED: only as wide as content needs */
+            min-width: 110px;
+            max-width: 180px; /* ADDED: maximum width limit */
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0; /* REMOVED: margin since we use gap now */
+            white-space: nowrap; /* ADDED: prevent text wrapping */
+            font-size: 1em;
+        }
+
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            flex-shrink: 0; /* ADDED: prevent dot from shrinking */
+        }
+
+        /* Trial sections */
+        .section-grid {
+            margin-bottom: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 20px; /* ADDED: Extra top margin */
+            clear: both; /* ADDED: Clear any floats */
+        }
+
+        .section-header-grid {
+            padding: 25px 20px; 
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative; 
+            z-index: 1; 
+        }
+
+        .trial-count-grid {
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .trials-grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .trial-card-grid {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            background: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .trial-card-grid:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102,126,234,0.15);
+            transform: translateY(-2px);
+        }
+
+        .trial-header-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .trial-title-grid {
+            font-size: 1em;
+            font-weight: bold;
+            color: #2c3e50;
+            line-height: 1.3;
+            flex: 1;
+            margin-right: 12px;
+        }
+
+        .score-badge-grid {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+            white-space: nowrap;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .score-green-grid {
+            background: #28a745;
+            color: white;
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+        }
+
+        .score-yellow-grid {
+            background: #ffc107;
+            color: #000;
+            box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
+        }
+
+        .score-orange-grid {
+            background: #fd7e14;
+            color: white;
+            box-shadow: 0 2px 4px rgba(253, 126, 20, 0.3);
+        }
+
+        .score-red-grid {
+            background: #dc3545;
+            color: white;
+            box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+        }
+
+        .trial-meta-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .nct-id-grid {
+            background: #007bff;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .study-type-grid {
+            color: #6c757d;
+            font-size: 0.8em;
+            font-style: italic;
+        }
+
+        .match-indicators-grid {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .match-tag-grid {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: 500;
+        }
+
+        .match-tag-grid.gene {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .match-tag-grid.ecog {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .trial-summary-grid {
+            font-size: 0.85em;
+            color: #495057;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            min-height: 60px;
+        }
+
+        /* Trial location info */
+        .trial-location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.85em;
+        }
+
+        .location-icon {
+            color: #007bff;
+            font-size: 1.2em;
+        }
+
+        .distance-badge {
+            margin-left: auto;
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .action-buttons-grid {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-grid {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-primary-grid {
+            background: #007bff;
+            color: white;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .btn-primary-grid:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .expand-btn-grid {
+            background: none;
+            border: 1px solid #dee2e6;
+            color: #6c757d;
+            padding: 6px 12px;
+            font-size: 0.75em;
+            flex: 1.5;
+            min-width: 120px;
+        }
+
+        .expand-btn-grid:hover {
+            background-color: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .trial-details-grid {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                max-height: 400px;
+                transform: translateY(0);
+            }
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 1200px) {
+            .visual-summary {
+                grid-template-columns: 1fr;
+                height: auto;
+                margin-bottom: 25px; 
+            }
+            
+            .medical-profile-card,
+            .chart-container,
+            .map-card {
+                margin-bottom: 20px;
+                min-height: auto; 
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section-header-grid {
+                padding: 20px 15px; /* ADDED: Reduced padding on mobile */
+            }
+            
+            .visual-summary {
+                margin-bottom: 20px; /* ADDED: Reduced margin on mobile */
+            }
+            
+            .spotlight-container {
+                flex-direction: column;
+            }
+        
+            .spotlight-feature {
+                padding: 15px 20px; /* CHANGED: from 15px 25px to 15px 20px */
+            }
+        
+            .spotlight-number {
+                font-size: 2.5em; /* ADDED: Smaller font on mobile */
+            }
+        
+            .stats-boxes-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        
+            .other-matches-chart {
+                min-height: 180px;
+            }
+        
+            .trials-grid-layout {
+                grid-template-columns: 1fr;
+            }
+        
+            .map-container {
+                min-height: 300px;
+            }
+        }
+
+        /* Enhanced Map Controls */
+        .map-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .map-control-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 10px 14px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            white-space: nowrap;
+        }
+
+        .map-control-btn:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Enhanced Legend Styling */
+        .leaflet-bottom.leaflet-left .leaflet-control {
+            margin-bottom: 20px;
+            margin-left: 20px;
+        }
+
+        .enhanced-map-legend {
+            background: rgba(255, 255, 255, 0.95) !important;
+            padding: 15px !important;
+            border-radius: 10px !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            font-family: 'Segoe UI', sans-serif !important;
+        }
+
+        .enhanced-map-legend h4 {
+            margin: 0 0 12px 0;
+            color: #2c3e50;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .enhanced-map-legend .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+
+        .enhanced-map-legend .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .enhanced-map-legend .legend-line {
+            width: 25px;
+            height: 3px;
+            background: #3498db;
+            border-radius: 2px;
+            opacity: 0.8;
+            flex-shrink: 0;
+        }
+
+        /* Animated Flight Path Styles */
+        .flight-path-animated {
+            animation: flight-dash 3s linear infinite;
+        }
+
+        @keyframes flight-dash {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -40; }
+        }
+
+        /* Enhanced Marker Styles */
+        .patient-marker-enhanced {
+            animation: pulse-enhanced 2s infinite;
+        }
+
+        @keyframes pulse-enhanced {
+            0% { 
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+                transform: scale(1.05);
+            }
+            100% { 
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+                transform: scale(1);
+            }
+        }
+
+        .trial-marker-enhanced {
+            transition: all 0.3s ease;
+        }
+
+        .trial-marker-enhanced:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 4px 8px rgba(39, 174, 96, 0.5));
+        }
+        @keyframes flight-dash {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -40; }
+        }
+        
+        @keyframes pulse-enhanced {
+            0% { 
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.5);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.5), 0 0 0 10px rgba(231, 76, 60, 0.2);
+                transform: scale(1.05);
+            }
+            100% { 
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.5);
+                transform: scale(1);
+            }
+        }
+        /* force flight paths visible in Safari / any browser */
+        .flight-path-animated {
+          stroke: #FF0000 !important;
+          stroke-width: 6 !important;
+          stroke-dasharray: 20 10 !important;
+          stroke-opacity: 1 !important;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 Clinical Trial Matching Report</h1>
+            <p>Compact Visual Report | Generated on June 05, 2025 at 10:59 AM EST</p>
+        </div>
+
+        <!-- Visual Summary with Charts -->
+        
+        <div class="visual-summary">
+            <!-- Medical Profile Card -->
+            <div class="medical-profile-card">
+                <div class="profile-header">MY MEDICAL PROFILE</div>
+
+                <div class="profile-section">
+                    <h4>Patient Information</h4>
+                    <div class="profile-item">
+                        <span class="profile-label">Name:</span>
+                        <span class="profile-value">John Doe</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Date of Birth:</span>
+                        <span class="profile-value">03/15/1965</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Age:</span>
+                        <span class="profile-value">60 years</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Gender:</span>
+                        <span class="profile-value">Male</span>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h4>Diagnosis</h4>
+                    <div class="profile-item">
+                        <span class="profile-label">Cancer Type:</span>
+                        <span class="profile-value">Colorectal</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Gene Mutation:</span>
+                        <span class="profile-value">KRAS</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Disease Status:</span>
+                        <span class="profile-value">Metastatic</span>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h4>Location</h4>
+                    <div class="profile-item">
+                        <span class="profile-label">Current:</span>
+                        <span class="profile-value">New York, NY</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Preferred Country:</span>
+                        <span class="profile-value">United States</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Match Results Section with Stats -->
+            <div class="chart-container spotlight-section">
+                <h3>🎯 Match Results</h3>
+                <div class="spotlight-container">
+                    <div class="spotlight-feature">
+                        <div class="spotlight-number" id="spotlightNumber">0</div>
+                        <div class="spotlight-label">High-Priority</div>
+                        <div class="spotlight-subtitle">Matches Found!</div>
+                    </div>
+
+                    <!-- Stats Boxes Row -->
+                    <div class="stats-boxes-row">
+                        <div class="stat-box">
+                            <div class="stat-number">1823</div>
+                            <div class="stat-label">Trials</div>
+                            <div class="stat-subtitle">Searched</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">1823</div>
+                            <div class="stat-label">Qualified</div>
+                            <div class="stat-subtitle">Matches</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">86%</div>
+                            <div class="stat-label">Best</div>
+                            <div class="stat-subtitle">Match</div>
+                        </div>
+                    </div>
+
+                    <div class="other-matches-chart">
+                        <canvas id="otherMatchesChart" width="300" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Interactive Trial Locations Map -->
+            <div class="map-card">
+                <div class="map-header">
+                    <span>✈️ Trial Locations & Flight Routes</span>
+                    <span style="font-size: 0.9em; color: #6c757d;" id="mapLocationCount">11 high-priority locations</span>
+                </div>
+                
+                <!-- Enhanced map container with better styling -->
+                <div class="map-container" id="trialMapContainer" style="position: relative;">
+                    <div id="leafletMap" style="
+                        width: 100%; 
+                        height: 100%; 
+                        min-height: 350px; 
+                        border-radius: 8px;
+                        box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+                    "></div>
+                </div>
+            </div>
+        </div>
+    
+
+        <!-- Trial Sections -->
+        
+        <div class="section-grid">
+            <div class="section-header-grid">
+                <div class="section-title-area">
+                    <h2 style="color: #2c3e50; font-size: 1.4em; margin-bottom: 5px;">🌟 High-Priority Matches (75%+)</h2>
+                </div>
+                <div class="trial-count-grid" style="background: #28a745;">
+                    12 trials
+                </div>
+            </div>
+            <div class="trials-grid-layout">
+                
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Randomized, Open-label Phase 3 Study of Amivantamab + FOLFIRI Versus Cetuximab...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06750094</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                The purpose of this study is to compare how long the participants are disease-free (progression-free survival) and and t...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Ironwood Cancer and Research Center</strong> - Chandler, Arizona</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06750094" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06750094" onclick="toggleDetails('06750094')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06750094" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">An Open-label, Multicenter, Single-arm Phase II Clinical Study Evaluating the Ef...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06959589</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                This is an open-label, multicenter, single-arm Phase II clinical study, divided into subgroups A and B:
+
+Cohort A - To e...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>The Second Affiliated Hospital, School of Medicine, Zhejiang University</strong> - Hangzhou, Zhejiang</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06959589" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06959589" onclick="toggleDetails('06959589')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06959589" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Pooled Mutant KRAS-Targeted Long Peptide Vaccine Combined With Balstilimab and B...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06411691</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                Phase 1b study evaluating the efficacy and immune response to a synthetic long peptide mutant KRAS vaccine (SPL mKRASvax...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Sidney Kimmel Comprehensive Cancer Center</strong> - Baltimore, Maryland</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06411691" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06411691" onclick="toggleDetails('06411691')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06411691" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Randomized, Open-label Phase 3 Study of Amivantamab and mFOLFOX6 or FOLFIRI Ve...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06662786</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                The purpose of this study is to compare how long the participants are disease-free (progression-free survival) when trea...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>St. Bernard's Medical Center</strong> - Jonesboro, Arkansas</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06662786" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06662786" onclick="toggleDetails('06662786')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06662786" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase Ib Study of Botensilimab Plus Balstilimab and Fasting-Mimicking Diet (FM...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06336902</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                This phase Ib trial tests the safety, side effects, and effectiveness of botensilimab, and balstilimab in combination wi...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Los Angeles General Medical Center</strong> - Los Angeles, California</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06336902" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06336902" onclick="toggleDetails('06336902')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06336902" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase Ib, Open Lable, Clinical Trial of JAB-21822 Combined With Second Line Ch...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06838338</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                KRAS is a common genetic mutation in tumors, and CRC is one of the tumors with a high KRAS mutation rate. The anti-tumor...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Beijing Cancer Hospital</strong> - Beijing, Beijing</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06838338" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06838338" onclick="toggleDetails('06838338')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06838338" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Phase 3 Multicenter, Randomized, Open-label, Active-controlled Study of Sotorasi...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06252649</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                The aim of this study is to compare progression free survival (PFS) in treatment-naïve Participants with KRAS p.G12C mut...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Ironwood Cancer and Research Centers Scottsdale</strong> - Chandler, Arizona</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06252649" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06252649" onclick="toggleDetails('06252649')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06252649" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Efficacy and Safety of Triweekly Cetuximab in Combination With Capecitabine as F...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT05775900</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                To explore the safety, efficacy and pharmacokinetic (PK) characteristics of triweekly cetuximab in combination with cape...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>The Sixth Affiliated Hospital of Sun Yat-sen University</strong> - Guangzhou, Guangdong</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT05775900" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-05775900" onclick="toggleDetails('05775900')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-05775900" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Pooled Mutant KRAS-Targeted Long Peptide Vaccine Combined With Nivolumab and Ipi...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT04117087</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                Phase 1 study for patients with resected PDAC after neoadjuvant and/ or adjuvant chemotherapy and/or radiation, as well ...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Sidney Kimmel Comprehensive Cancer Center</strong> - Baltimore, Maryland</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT04117087" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-04117087" onclick="toggleDetails('04117087')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-04117087" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase 3, Randomized, Open-label, Multicenter Clinical Study to Evaluate the Sa...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06997497</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                Researchers are looking for other ways to treat locally advanced or metastatic colorectal cancer (mCRC) that is unresect...
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06997497" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06997497" onclick="toggleDetails('06997497')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06997497" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Multicenter Phase 1b/2 Study of Adagrasib, Cetuximab, and Cemiplimab for Metas...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06412198</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                To learn if the drug combination of adagrasib, cetuximab, and cemiplimab can help to control metastatic CRC with KRAS G1...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Massachusetts General Hospital Cancer Center</strong> - Boston, Massachusetts</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06412198" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06412198" onclick="toggleDetails('06412198')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06412198" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Clinical Study of IX001 TCR-T In the Treatment of Advanced Pancreatic Cancer a...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06487377</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                This is a single-arm, single-center, open-label clinical study aimed at evaluating the safety and efficacy of IX001 TCR-...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Shanghai Pudong Hospital</strong> - Shanghai, Shanghai</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06487377" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06487377" onclick="toggleDetails('06487377')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06487377" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+            </div>
+        </div>
+    
+        
+        <div class="section-grid">
+            <div class="section-header-grid">
+                <div class="section-title-area">
+                    <h2 style="color: #2c3e50; font-size: 1.4em; margin-bottom: 5px;">✨ Very Good Matches (60-74%)</h2>
+                </div>
+                <div class="trial-count-grid" style="background: #ffc107;">
+                    823 trials
+                </div>
+            </div>
+            <div class="trials-grid-layout">
+                
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase 1, Open Label, Dose Escalation of HBI-2438 in Patients With Advanced Mal...</div>
+                <div class="score-badge-grid score-yellow-grid">71%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT05485974</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                A Phase 1 dose escalation study in patients with advanced solid tumors harboring KRAS G12C mutation to determine the max...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>California Cancer Associates for Research and Excellence, Inc. (cCare)</strong> - Encinitas, California</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT05485974" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-05485974" onclick="toggleDetails('05485974')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-05485974" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase Ia/Ib Dose-Escalation and Dose-Expansion Study Evaluating the Safety, Ph...</div>
+                <div class="score-badge-grid score-yellow-grid">71%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT04449874</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                This is a Phase I dose-escalation and dose-expansion study that will evaluate the safety, pharmacokinetics (PK), and pre...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>City of Hope Comprehensive Cancer Center</strong> - Duarte, California</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT04449874" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-04449874" onclick="toggleDetails('04449874')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-04449874" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase Ib Clinical Trial to Evaluate the Administration of Autologous T-cells G...</div>
+                <div class="score-badge-grid score-yellow-grid">71%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06253520</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                Background:
+
+Many cancer cells produce substances called antigens that are unique to each cancer. These antigens stimula...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>National Institutes of Health Clinical Center</strong> - Bethesda, Maryland</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06253520" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06253520" onclick="toggleDetails('06253520')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06253520" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Phase 1/2 Study of TSN1611 in Subjects With Advanced Solid Tumors Harboring KRAS...</div>
+                <div class="score-badge-grid score-yellow-grid">71%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06385925</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                The study is a first-in-human (FIH), open-label, multi-center phase 1/2 study of TSN1611 in subjects with KRAS G12D muta...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>MD Anderson Cancer Center</strong> - Houston, Texas</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06385925" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06385925" onclick="toggleDetails('06385925')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06385925" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase 1 Open-Label Study of PF-07934040 as a Single Agent and in Combination W...</div>
+                <div class="score-badge-grid score-yellow-grid">71%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06447662</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                The purpose of this study is to learn about the safety and effects of the study medicine alone or when given together wi...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Highlands Oncology Group, PA</strong> - Fayetteville, Arkansas</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06447662" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06447662" onclick="toggleDetails('06447662')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06447662" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase 1, Open-Label, Multicenter Study of INCB161734 in Participants With Adva...</div>
+                <div class="score-badge-grid score-yellow-grid">71%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06179160</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                This study is conducted to determine the safety and tolerability of INCB161734 as a single agent or in combination with ...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Mayo Clinic Hospital</strong> - Phoenix, Arizona</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06179160" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06179160" onclick="toggleDetails('06179160')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06179160" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase 1/2 Multiple Expansion Cohort Trial of the SOS1 Inhibitor MRTX0902 in Pa...</div>
+                <div class="score-badge-grid score-yellow-grid">71%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT05578092</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                This is a Phase 1/2, open-label, multicenter, study evaluating the safety, tolerability, PK, PD, and anti-tumor activity...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Local Institution - 001-120</strong> - Colorado Springs, Colorado</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT05578092" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-05578092" onclick="toggleDetails('05578092')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-05578092" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">An Open-label Phase 1 Study of ASP4396 in Participants With Locally Advanced (Un...</div>
+                <div class="score-badge-grid score-yellow-grid">71%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06364696</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                Genes contain genetic code which tell the body which proteins to make. Some types of cancer are caused by changes, or mu...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>University of Kansas Cancer Center</strong> - Westwood, Kansas</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06364696" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06364696" onclick="toggleDetails('06364696')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06364696" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase I Clinical Study to Evaluate the Safety, Tolerability, Pharmacokinetics,...</div>
+                <div class="score-badge-grid score-yellow-grid">71%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06403735</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06403735" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06403735" onclick="toggleDetails('06403735')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06403735" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Phase 1/1b, Multicenter, Open-Label, Study of RMC 9805 in Participants With Adva...</div>
+                <div class="score-badge-grid score-yellow-grid">71%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06040541</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06040541" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06040541" onclick="toggleDetails('06040541')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06040541" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+            </div>
+        </div>
+    
+        
+        <div class="section-grid">
+            <div class="section-header-grid">
+                <div class="section-title-area">
+                    <h2 style="color: #2c3e50; font-size: 1.4em; margin-bottom: 5px;">💡 Good Potential Matches (45-59%)</h2>
+                </div>
+                <div class="trial-count-grid" style="background: #fd7e14;">
+                    980 trials
+                </div>
+            </div>
+            <div class="trials-grid-layout">
+                
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A First-in-Human (FiH) Study of IK-595, an Oral Dual MEK/RAF Inhibitor, in Patie...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06270082</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06270082" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06270082" onclick="toggleDetails('06270082')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06270082" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Multi-center, Open-label, Phase I/II Clinical Study to Evaluate the Safety, To...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06895031</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06895031" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06895031" onclick="toggleDetails('06895031')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06895031" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Platform Study of RAS(ON) Inhibitors in Patients With Gastrointestinal Solid T...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06445062</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06445062" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06445062" onclick="toggleDetails('06445062')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06445062" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A PHASE 1 OPEN-LABEL STUDY OF PF-07985045 AS A SINGLE-AGENT AND IN COMBINATION W...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06704724</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06704724" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06704724" onclick="toggleDetails('06704724')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06704724" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Carbon Nanoparticle-Loaded Iron [CNSI-Fe(II)] Dose Escalation Study for the Trea...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06048367</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06048367" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06048367" onclick="toggleDetails('06048367')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06048367" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Phase 1, First-in-Human, Multicenter, Open-Label Study to Evaluate the Safety, T...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06026410</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06026410" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06026410" onclick="toggleDetails('06026410')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06026410" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Phase I Study of Autologous CD8+ and CD4+ Engineered T Cell Receptor T Cells in ...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06105021</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06105021" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06105021" onclick="toggleDetails('06105021')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06105021" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase Ib Study Evaluating the Safety, Tolerability , Pharmacokinetics，Activity...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06963502</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06963502" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06963502" onclick="toggleDetails('06963502')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06963502" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">An Open-label Phase 1/2 Dose Finding, Safety and Efficacy Study of Oral NEO212 i...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06047379</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06047379" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06047379" onclick="toggleDetails('06047379')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06047379" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase 1a/1b Study of the PI3Kα:RAS Breaker BBO-10203 in Subjects With Advanced...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06625775</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06625775" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06625775" onclick="toggleDetails('06625775')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06625775" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+            </div>
+        </div>
+    
+        
+        <div class="section-grid">
+            <div class="section-header-grid">
+                <div class="section-title-area">
+                    <h2 style="color: #2c3e50; font-size: 1.4em; margin-bottom: 5px;">🔍 Needs Review Matches (<45%)</h2>
+                </div>
+                <div class="trial-count-grid" style="background: #dc3545;">
+                    8 trials
+                </div>
+            </div>
+            <div class="trials-grid-layout">
+                
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Prospective, Multicenter Clinical Study of Preservative Effect on Postoperativ...</div>
+                <div class="score-badge-grid score-red-grid">44%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT05049317</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT05049317" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-05049317" onclick="toggleDetails('05049317')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-05049317" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Prophylactic Use of Tamsulosin in the Prevention of Post-operative Urinary Reten...</div>
+                <div class="score-badge-grid score-red-grid">44%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT05941806</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT05941806" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-05941806" onclick="toggleDetails('05941806')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-05941806" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Multicenter, Randomized Controlled Trial of the Efficacy, Safety and Immunogen...</div>
+                <div class="score-badge-grid score-red-grid">44%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT03947775</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT03947775" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-03947775" onclick="toggleDetails('03947775')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-03947775" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">The Ku Ola Project</div>
+                <div class="score-badge-grid score-red-grid">44%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06964633</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06964633" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06964633" onclick="toggleDetails('06964633')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06964633" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Intérêt de la rééducation érectile précoce Par Sildénafil après radiothérapie et...</div>
+                <div class="score-badge-grid score-red-grid">44%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06123156</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06123156" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06123156" onclick="toggleDetails('06123156')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06123156" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Multicenter, Randomized, Double-Blind, Aluminum Adjuvant-Controlled Phase III ...</div>
+                <div class="score-badge-grid score-red-grid">42%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06866574</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06866574" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06866574" onclick="toggleDetails('06866574')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06866574" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">The Effect of Naldemedine on Opioid-induced Bowel Dysfunction. An Investigator I...</div>
+                <div class="score-badge-grid score-red-grid">42%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06334198</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06334198" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06334198" onclick="toggleDetails('06334198')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06334198" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">SCREEN-HPV: Blood Biomarkers Based Screening for HPV-driven OPC</div>
+                <div class="score-badge-grid score-red-grid">42%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06528353</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06528353" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06528353" onclick="toggleDetails('06528353')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06528353" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+            </div>
+        </div>
+    
+
+        <!-- Footer -->
+        <div class="footer">
+            <h3>🤝 Clinical Trial Support</h3>
+            <p><strong>Support:</strong> 1-800-TRIALS | <strong>Email:</strong> support@matchreport.com</p>
+            <p style="font-size: 0.9em; opacity: 0.8; margin-top: 10px;">
+                Report ID: MR-20250605105919 | Generated: June 05, 2025 at 10:59 AM EST
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Wait for DOM to be fully loaded before initializing charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Convert data for JavaScript
+            const matchData = {"spotlight": {"count": 12, "label": "High-Priority", "subtitle": "Matches Found!"}, "other_matches": {"labels": ["Very Good", "Good Potential", "Needs Review"], "data": [823, 980, 8], "colors": ["#ffc107", "#fd7e14", "#dc3545"], "total_label": "Match Quality Distribution (1811 total)"}, "stats_boxes": {"total_searched": {"count": 1823, "label": "Trials", "subtitle": "Searched"}, "qualified_matches": {"count": 1823, "label": "Qualified", "subtitle": "Matches"}, "best_match": {"count": "86%", "label": "Best", "subtitle": "Match"}}, "total": 1823, "total_other": 1811};
+            const trialLocationsData = {"user_location": {"name": "New York, NY", "lat": 40.7128, "lng": -74.006}, "trial_locations": [{"nct_id": "NCT06750094", "facility_name": "Ironwood Cancer and Research Center", "city": "Chandler", "state": "Arizona", "country": "United States", "display_name": "Chandler, Arizona", "score": 86, "lat": 33.30616, "lng": -111.84125}, {"nct_id": "NCT06959589", "facility_name": "The Second Affiliated Hospital, School of Medicine, Zhejiang University", "city": "Hangzhou", "state": "Zhejiang", "country": "China", "display_name": "Hangzhou, Zhejiang", "score": 86, "lat": 30.29365, "lng": 120.16142}, {"nct_id": "NCT06411691", "facility_name": "Sidney Kimmel Comprehensive Cancer Center", "city": "Baltimore", "state": "Maryland", "country": "United States", "display_name": "Baltimore, Maryland", "score": 86, "lat": 39.29038, "lng": -76.61219}, {"nct_id": "NCT06662786", "facility_name": "St. Bernard's Medical Center", "city": "Jonesboro", "state": "Arkansas", "country": "United States", "display_name": "Jonesboro, Arkansas", "score": 86, "lat": 35.8423, "lng": -90.70428}, {"nct_id": "NCT06336902", "facility_name": "Los Angeles General Medical Center", "city": "Los Angeles", "state": "California", "country": "United States", "display_name": "Los Angeles, California", "score": 86, "lat": 34.05223, "lng": -118.24368}, {"nct_id": "NCT06838338", "facility_name": "Beijing Cancer Hospital", "city": "Beijing", "state": "Beijing", "country": "China", "display_name": "Beijing, Beijing", "score": 86, "lat": 39.9075, "lng": 116.39723}, {"nct_id": "NCT06252649", "facility_name": "Ironwood Cancer and Research Centers Scottsdale", "city": "Chandler", "state": "Arizona", "country": "United States", "display_name": "Chandler, Arizona", "score": 86, "lat": 33.30616, "lng": -111.84125}, {"nct_id": "NCT05775900", "facility_name": "The Sixth Affiliated Hospital of Sun Yat-sen University", "city": "Guangzhou", "state": "Guangdong", "country": "China", "display_name": "Guangzhou, Guangdong", "score": 86, "lat": 23.11667, "lng": 113.25}, {"nct_id": "NCT04117087", "facility_name": "Sidney Kimmel Comprehensive Cancer Center", "city": "Baltimore", "state": "Maryland", "country": "United States", "display_name": "Baltimore, Maryland", "score": 86, "lat": 39.29038, "lng": -76.61219}, {"nct_id": "NCT06412198", "facility_name": "Massachusetts General Hospital Cancer Center", "city": "Boston", "state": "Massachusetts", "country": "United States", "display_name": "Boston, Massachusetts", "score": 86, "lat": 42.35843, "lng": -71.05977}, {"nct_id": "NCT06487377", "facility_name": "Shanghai Pudong Hospital", "city": "Shanghai", "state": "Shanghai", "country": "China", "display_name": "Shanghai, Shanghai", "score": 86, "lat": 31.22222, "lng": 121.45806}], "total_count": 11};
+
+            console.log('Match data loaded:', matchData);
+            console.log('Trial locations data loaded:', trialLocationsData);
+
+            // Update spotlight number with animation
+            const spotlightNumber = document.getElementById('spotlightNumber');
+            if (spotlightNumber && matchData.spotlight) {
+                let currentNumber = 0;
+                const targetNumber = matchData.spotlight.count;
+                const increment = Math.ceil(targetNumber / 20) || 1;
+
+                const counter = setInterval(() => {
+                    currentNumber += increment;
+                    if (currentNumber >= targetNumber) {
+                        currentNumber = targetNumber;
+                        clearInterval(counter);
+                    }
+                    spotlightNumber.textContent = currentNumber;
+                }, 50);
+            }
+
+            // Other Matches Horizontal Bar Chart
+            const otherCtx = document.getElementById('otherMatchesChart');
+            if (otherCtx && matchData.other_matches) {
+                new Chart(otherCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: matchData.other_matches.labels,
+                        datasets: [{
+                            data: matchData.other_matches.data,
+                            backgroundColor: matchData.other_matches.colors,
+                            borderWidth: 0,
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        aspectRatio: 1.5,
+                        plugins: {
+                            legend: { display: false },
+                            title: {
+                                display: true,
+                                text: matchData.other_matches.total_label || 'Match Quality Distribution',
+                                font: { 
+                                    size: 13,
+                                    weight: '600'
+                                },
+                                padding: { bottom: 4 } 
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.parsed.x + ' trials';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: { display: false },
+                                ticks: {
+                                    font: { 
+                                        size: 10,
+                                        weight: '500'
+                                    },
+                                    padding: 4,
+                                    color: '#666',
+                                    stepSize: 200
+                                },
+                                border: { display: false }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: {
+                                    font: { 
+                                        size: 11,
+                                        weight: 'bold'
+                                    },
+                                    color: '#2c3e50',
+                                    padding: 8,
+                                    maxRotation: 0,
+                                    minRotation: 0
+                                }
+                            }
+                        },
+                        layout: {
+                            padding: {
+                                right: 15, 
+                                left: 8,    
+                                bottom: 20,
+                                top: 2
+                            }
+                        },
+                        elements: {
+                            bar: { borderRadius: 3 }
+                        }
+                    }
+                });
+            }
+
+            // Update location count
+            const locationCountEl = document.getElementById('mapLocationCount');
+            if (locationCountEl && trialLocationsData.total_count) {
+                locationCountEl.textContent = `${trialLocationsData.total_count} high-priority locations`;
+            } else if (locationCountEl) {
+                locationCountEl.textContent = '11 high-priority locations';
+            }
+
+            // Initialize the interactive map
+            initializeTrialMap(trialLocationsData);
+
+            // Add spotlight animation effect
+            setTimeout(() => {
+                const spotlightEl = document.querySelector('.spotlight-feature');
+                if (spotlightEl && matchData.spotlight && matchData.spotlight.count > 0) {
+                    spotlightEl.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        spotlightEl.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }, 1500);
+        });
+        
+function initializeTrialMap(trialLocationsData) {
+            console.log('🗺️ Initializing Enhanced Flight Route Map...');
+            console.log('Data received:', trialLocationsData);
+
+            // Check if Leaflet is loaded
+            if (typeof L === 'undefined') {
+                console.error('❌ Leaflet library not loaded!');
+                return;
+            }
+
+            const mapContainer = document.getElementById('leafletMap');
+            if (!mapContainer) {
+                console.error('❌ Map container element not found');
+                return;
+            }
+
+            // Validate data structure
+            if (!trialLocationsData) {
+                console.error('❌ No trial locations data provided');
+                return;
+            }
+
+            const userLocation = trialLocationsData.user_location;
+            const trialLocations = trialLocationsData.trial_locations || [];
+
+            console.log('👤 User location:', userLocation);
+            console.log('🏥 Trial locations count:', trialLocations.length);
+            console.log('🏥 First trial location:', trialLocations[0]);
+
+            try {
+                // Initialize the Enhanced Leaflet map
+                const map = L.map('leafletMap', {
+                    center: [30.0, 0.0],
+                    zoom: 2,
+                    maxZoom: 12,
+                    minZoom: 1,
+                    zoomControl: true
+                });
+
+                // Create a custom pane for flight paths that's always on top
+                map.createPane('flightPaths');
+                map.getPane('flightPaths').style.zIndex = 650; // Above everything
+                map.getPane('flightPaths').style.pointerEvents = 'none';
+                map.getPane('flightPaths').style.overflow = 'visible';
+
+                // Add OpenStreetMap tile layer
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 18
+                }).addTo(map);
+
+                // Store references for controls
+                let flightPaths = [];
+                let trialMarkers = [];
+                let userMarker = null;
+                let animationActive = true; // CHANGED: Start with animation active
+                // REMOVED: highlightActive variable
+
+                // Add Enhanced User Location Marker
+                
+                if (userLocation && userLocation.lat && userLocation.lng) {
+                    console.log('✅ Adding enhanced user marker at:', userLocation.lat, userLocation.lng);
+                
+                    // custom icon
+                    const patientIcon = L.divIcon({
+                        html: `<div class="patient-marker-enhanced" style="
+                            background:#e74c3c;width:20px;height:20px;border-radius:50%;
+                            border:3px solid white;box-shadow:0 4px 12px rgba(231,76,60,.5);"></div>`,
+                        iconSize: [26, 26],
+                        iconAnchor: [13, 13],
+                        className: 'enhanced-patient-marker'
+                    });
+                
+                    // ★ 正确创建 userMarker
+                    userMarker = L.marker(
+                        [userLocation.lat, userLocation.lng],
+                        { icon: patientIcon, zIndexOffset: 1000 }
+                    ).addTo(map);
+                
+                    userMarker.bindPopup(`
+                        <div style="text-align:center;padding:10px;font-family:'Segoe UI',sans-serif;">
+                            <h4 style="margin:0 0 8px 0;color:#e74c3c;">🏠 Your Location</h4>
+                            <p style="margin:0;font-weight:bold;color:#2c3e50;">${userLocation.name}</p>
+                            <p style="margin:5px 0 0 0;font-size:.85em;color:#6c757d;">Starting point for trial searches</p>
+                        </div>
+                    `);
+                }
+
+                // Add Enhanced Trial Location Markers
+                console.log('🏥 Processing trial locations...');
+                trialLocations.forEach((trial, index) => {
+                    console.log(`Processing trial ${index + 1}:`, trial);
+                    
+                    // Handle different possible data structures
+                    let lat, lng, facilityName, displayName, score, nctId;
+                    
+                    if (trial.lat && trial.lng) {
+                        lat = parseFloat(trial.lat);
+                        lng = parseFloat(trial.lng);
+                    } else if (trial.latitude && trial.longitude) {
+                        lat = parseFloat(trial.latitude);
+                        lng = parseFloat(trial.longitude);
+                    } else if (trial.coordinates) {
+                        lat = parseFloat(trial.coordinates.lat || trial.coordinates.latitude);
+                        lng = parseFloat(trial.coordinates.lng || trial.coordinates.longitude);
+                    }
+
+                    facilityName = trial.facility_name || trial.name || trial.facility || 'Unknown Facility';
+                    displayName = trial.display_name || trial.location || trial.city || facilityName;
+                    score = trial.score || trial.match_score || '85';
+                    nctId = trial.nct_id || trial.trial_id || `TRIAL-${index + 1}`;
+
+                    console.log(`Trial ${index + 1} coordinates: lat=${lat}, lng=${lng}`);
+
+                    if (!lat || !lng || isNaN(lat) || isNaN(lng)) {
+                        console.warn(`⚠️ Trial ${index + 1} missing or invalid coordinates`);
+                        return;
+                    }
+
+                    // Create enhanced trial icon with trial count
+                    const trialIcon = L.divIcon({
+                        html: `<div class="trial-marker-enhanced" style="
+                            background: #27ae60; 
+                            width: 16px; 
+                            height: 16px; 
+                            border-radius: 50%; 
+                            border: 2px solid white; 
+                            box-shadow: 0 3px 8px rgba(39, 174, 96, 0.4); 
+                            position: relative;
+                            cursor: pointer;
+                            z-index: 500;
+                        ">
+                            <div style="
+                                position: absolute; 
+                                top: -8px; 
+                                right: -8px; 
+                                background: white; 
+                                color: #27ae60; 
+                                border: 1px solid #27ae60; 
+                                border-radius: 50%; 
+                                width: 14px; 
+                                height: 14px; 
+                                font-size: 9px; 
+                                font-weight: bold; 
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center; 
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                            ">${trial.trial_count || 1}</div>
+                        </div>`,
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10],
+                        className: 'enhanced-trial-marker'
+                    });
+
+                    const trialMarker = L.marker([lat, lng], {
+                        icon: trialIcon,
+                        zIndexOffset: 500
+                    }).addTo(map);
+
+                    // Calculate distance if user location exists
+                    let distanceText = 'Calculating...';
+                    if (userLocation && userLocation.lat && userLocation.lng) {
+                        const distance = calculateDistance(userLocation.lat, userLocation.lng, lat, lng);
+                        distanceText = `${Math.round(distance)} miles`;
+                    }
+
+                    // Enhanced popup for trial details
+                    trialMarker.bindPopup(`
+                        <div style="padding: 12px; min-width: 240px; font-family: 'Segoe UI', sans-serif;">
+                            <h4 style="margin: 0 0 10px 0; color: #27ae60; display: flex; align-items: center; gap: 6px;">
+                                🏥 ${facilityName}
+                            </h4>
+                            <div style="background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold; display: inline-block; margin-bottom: 8px;">
+                                Clinical Trial Site
+                            </div>
+                            <p style="margin: 8px 0; color: #2c3e50;">
+                                <strong>📍 Location:</strong> ${displayName}
+                            </p>
+                            <p style="margin: 8px 0; color: #2c3e50;">
+                                <strong>🎯 Match Score:</strong> <span style="color: #27ae60; font-weight: bold;">${score}%</span>
+                            </p>
+                            <p style="margin: 8px 0; color: #2c3e50;">
+                                <strong>🔬 Trial ID:</strong> ${nctId}
+                            </p>
+                            <div style="background: #e3f2fd; color: #1565c0; padding: 8px; border-radius: 6px; font-size: 0.85em; margin-top: 10px;">
+                                <strong>✈️ Distance:</strong> ${distanceText}<br>
+                                <strong>🕒 Est. Flight:</strong> ${Math.round(parseFloat(distanceText) / 500)}h
+                            </div>
+                        </div>
+                    `);
+
+                    trialMarkers.push(trialMarker);
+                    console.log(`✅ Added trial marker ${index + 1} at [${lat}, ${lng}]`);
+
+                    // Add Simple Straight Flight Route (FIXED VERSION)
+                    if (userLocation && userLocation.lat && userLocation.lng) {
+                        console.log(`Creating flight path from [${userLocation.lat}, ${userLocation.lng}] to [${lat}, ${lng}]`);
+                        
+                        // Create simple straight line with CUSTOM PANE
+                        const straightPath = L.polyline(
+                          [[userLocation.lat, userLocation.lng], [lat, lng]],
+                          { 
+                            pane: 'flightPaths',
+                            fill: false,
+                            color: '#FF0000',
+                            weight: 6,
+                            opacity: 1,
+                            dashArray: '20,10',
+                            className: 'flight-path-animated'
+                          }
+                        ).addTo(map);
+                        
+
+                        
+                        console.log(`✅ Added flight path ${index + 1} to CUSTOM PANE - should be on top of everything`);
+                        
+                        flightPaths.push(straightPath);
+                        console.log(`✅ Added STRAIGHT flight path ${index + 1} - should be VISIBLE now`);
+                    }
+                });
+
+                console.log(`✅ Added ${trialMarkers.length} trial markers and ${flightPaths.length} flight paths`);
+
+                // MODIFIED: Simplified Control Buttons (removed Highlight Trials, made Animate Routes always active)
+                const controlContainer = L.DomUtil.create('div', 'map-controls');
+                controlContainer.style.cssText = `
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    z-index: 1000;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                `;
+                mapContainer.appendChild(controlContainer);
+
+                // MODIFIED: Show Animation Status (instead of toggle button)
+                const animationStatus = L.DomUtil.create('div', 'animation-status-indicator', controlContainer);
+                animationStatus.innerHTML = '✈️ Routes Animating';
+                animationStatus.style.cssText = `
+                    background: rgba(39, 174, 96, 0.95);
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 6px;
+                    font-size: 0.8em;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                `;
+
+                // Add enhanced CSS for flight animations
+                const animationStyle = document.createElement('style');
+                animationStyle.textContent = `
+                    @keyframes flight-dash {
+                        0% { stroke-dashoffset: 0; }
+                        100% { stroke-dashoffset: -30; }
+                    }
+                    .flight-path-animated {
+                        animation: flight-dash 2s linear infinite !important;
+                    }
+                    @keyframes status-pulse {
+                        0%, 100% { opacity: 1; }
+                        50% { opacity: 0.7; }
+                    }
+                    .animation-status-indicator {
+                        animation: status-pulse 2s infinite;
+                    }
+                `;
+                document.head.appendChild(animationStyle);
+
+                // REMOVED: Show Distances Button
+
+                // Reset View Button (modified to restart animation)
+                const resetBtn = L.DomUtil.create('button', 'map-control-btn', controlContainer);
+                resetBtn.innerHTML = '🌍 Reset View';
+                resetBtn.style.cssText = `
+                    background: rgba(255, 255, 255, 0.95);
+                    border: none;
+                    padding: 10px 14px;
+                    border-radius: 6px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                    cursor: pointer;
+                    font-size: 0.85em;
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    white-space: nowrap;
+                `;
+                resetBtn.onclick = function() {
+                    console.log('🔄 Resetting view...');
+                    map.setView([30.0, 0.0], 2);
+                    
+                    // MODIFIED: Always restart animation after reset
+                    animationActive = true;
+                    startFlightAnimation();
+                };
+
+                // SIMPLIFIED: Function to start flight animation (FIXED)
+                function waitForPathElement(path, index, maxRetries = 10) {
+                    let retries = 0;
+                    const checkInterval = setInterval(() => {
+                        const element = path.getElement();
+                        if (element) {
+                            console.log(`✅ DOM element ready for flight path ${index + 1}`);
+                
+                            path.setStyle({         
+                              color: '#FF0000',
+                              weight: 6,
+                              opacity: 1,
+                              dashArray: '20,10',      // 必须写成 dashArray（Leaflet 属性名）
+                            });
+                
+                            element.classList.add('flight-path-animated');
+                            path.bringToFront(); 
+                            clearInterval(checkInterval);
+                        } else {
+                            retries++;
+                            if (retries >= maxRetries) {
+                                console.error(`❌ Failed to get DOM element for flight path ${index + 1}`);
+                                clearInterval(checkInterval);
+                            }
+                        }
+                    }, 300);
+                }
+                
+                function startFlightAnimation() {
+                    console.log('🎬 Starting flight route animation...');
+                    console.log(`Found ${flightPaths.length} flight paths to animate`);
+                
+                    if (flightPaths.length === 0) {
+                        console.error('❌ No flight paths found to animate!');
+                        return;
+                    }
+                
+                    flightPaths.forEach((path, index) => {
+                        setTimeout(() => {
+                            console.log(`🚀 Launching animation setup for flight path ${index + 1}`);
+                            waitForPathElement(path, index);
+                        }, index * 500);
+                    });
+                }
+
+
+                // Add Enhanced Legend (unchanged)
+                const legend = L.control({position: 'bottomleft'});
+                legend.onAdd = function(map) {
+                    const div = L.DomUtil.create('div', 'enhanced-map-legend');
+                    div.style.cssText = `
+                        background: rgba(255, 255, 255, 0.95) !important;
+                        padding: 15px !important;
+                        border-radius: 10px !important;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+                        backdrop-filter: blur(10px);
+                        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+                        font-family: 'Segoe UI', sans-serif !important;
+                    `;
+                    div.innerHTML = `
+                        <h4 style="margin: 0 0 12px 0; color: #2c3e50; font-size: 1em; font-weight: 600;">🗺️ Map Legend</h4>
+                        <div style="display: flex; align-items: center; margin-bottom: 8px; gap: 10px; font-size: 0.9em;">
+                            <div style="width: 14px; height: 14px; border-radius: 50%; background: #e74c3c; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); flex-shrink: 0;"></div>
+                            <span>Your Location</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 8px; gap: 10px; font-size: 0.9em;">
+                            <div style="width: 14px; height: 14px; border-radius: 50%; background: #27ae60; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); flex-shrink: 0;"></div>
+                            <span>Clinical Trial Sites</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; font-size: 0.9em;">
+                            <div style="width: 25px; height: 3px; background: #3498db; border-radius: 2px; opacity: 0.8; flex-shrink: 0;"></div>
+                            <span>Animated Flight Routes</span>
+                        </div>
+                    `;
+                    return div;
+                };
+                legend.addTo(map);
+
+                // Auto-fit bounds if we have markers
+                if (trialMarkers.length > 0 || userMarker) {
+                    const group = new L.featureGroup([...trialMarkers, ...(userMarker ? [userMarker] : [])]);
+                    map.fitBounds(group.getBounds().pad(0.1));
+                }
+
+                // ADDED: Start animation automatically after map loads (FIXED TIMING)
+                setTimeout(() => {
+                    console.log('🕐 5-second delay complete, starting animation...');
+                    startFlightAnimation();
+                    
+                    // FORCE visibility check after 2 more seconds
+                    setTimeout(() => {
+                        console.log('🔍 Checking flight path visibility...');
+                        flightPaths.forEach((path, index) => {
+                            const element = path.getElement();
+                            if (element) {
+                                const computedStyle = window.getComputedStyle(element);
+                                console.log(`Flight path ${index + 1} computed style:`, {
+                                    stroke: computedStyle.stroke,
+                                    strokeWidth: computedStyle.strokeWidth,
+                                    visibility: computedStyle.visibility,
+                                    display: computedStyle.display
+                                });
+                            }
+                        });
+                    }, 2000);
+                }, 5000);
+
+                console.log('✅ Enhanced flight route map initialized successfully!');
+                console.log(`📊 Summary: ${trialMarkers.length} trial sites, ${flightPaths.length} flight routes`);
+                console.log('🎬 Animation started automatically');
+
+            } catch (error) {
+                console.error('❌ Error initializing enhanced map:', error);
+                mapContainer.innerHTML = `
+                    <div style="padding: 20px; color: #dc3545; text-align: center; font-family: 'Segoe UI', sans-serif;">
+                        <h4>🗺️ Map Loading Error</h4>
+                        <p>Unable to load the interactive map. Please refresh the page.</p>
+                        <p style="font-size: 0.85em; color: #6c757d;">Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+ 
+
+        // Helper function to create curved flight paths
+        function createCurvedFlightPath(start, end) {
+            const points = [];
+            const steps = 50;
+
+            for (let i = 0; i <= steps; i++) {
+                const fraction = i / steps;
+                const lat = start[0] + (end[0] - start[0]) * fraction;
+                const lng = start[1] + (end[1] - start[1]) * fraction;
+                
+                // Create more pronounced curve for longer distances
+                const distance = Math.abs(end[1] - start[1]);
+                const curveFactor = Math.min(0.3 * distance, 20); // Max 20 degree curve
+                const curveOffset = Math.sin(fraction * Math.PI) * curveFactor;
+                const curvedLat = lat + curveOffset;
+                
+                points.push([curvedLat, lng]);
+            }
+            return points;
+        }
+
+        // Distance calculation helper function
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 3959; // Earth's radius in miles
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                      Math.sin(dLng/2) * Math.sin(dLng/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+
+        // Toggle trial details function
+        function toggleDetails(nctId) {
+            const details = document.getElementById('details-' + nctId);
+            const btn = document.getElementById('btn-' + nctId);
+            if (!details || !btn) return;
+            if (details.style.display === 'none' || details.style.display === '') {
+                details.style.display = 'block';
+                btn.innerHTML = '▼ Less Details';
+                btn.style.backgroundColor = '#dc3545';
+                btn.style.color = 'white';
+            } else {
+                details.style.display = 'none';
+                btn.innerHTML = '▶ More Details';
+                btn.style.backgroundColor = '';
+                btn.style.color = '#6c757d';
+            }
+        }
+    </script>
+</body>
+</html>
