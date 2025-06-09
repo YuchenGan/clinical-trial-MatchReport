@@ -504,22 +504,26 @@ function initializeTrialMap(trialLocationsData) {{
                 const startPoint = [parseFloat(userLocation.lat), parseFloat(userLocation.lng)];
                 const endPoint = [lat, lng];
                 
+                // Create curved path points
+                const curvedPoints = createCurvedFlightPath(startPoint, endPoint);
+                
                 // Create canvas renderer for this path
                 const canvasRenderer = L.canvas();
                 
                 // Create polyline with canvas renderer
                 const flightPath = L.polyline(
-                    [startPoint, endPoint], 
+                    curvedPoints,  // Use curved points instead of straight line
                     {{
                         color: '#3498db',
                         weight: 2,
                         opacity: 0.6,
+                        smoothFactor: 1,  // Smooth the curve
                         renderer: canvasRenderer  // This is the key!
                     }}
                 ).addTo(map);
 
                 flightPaths.push(flightPath);
-                console.log(`✅ Added flight path ${{index + 1}} with canvas renderer`);
+                console.log(`✅ Added curved flight path ${{index + 1}} with canvas renderer`);
             }}
         }});
 
@@ -624,6 +628,49 @@ function initializeTrialMap(trialLocationsData) {{
             </div>
         `;
     }}
+}}
+
+// Helper function to create curved flight paths
+function createCurvedFlightPath(start, end) {{
+    const points = [];
+    const steps = 50;  // Number of points in the curve
+    
+    const lat1 = start[0];
+    const lng1 = start[1];
+    const lat2 = end[0];
+    const lng2 = end[1];
+    
+    // Calculate the midpoint
+    const midLat = (lat1 + lat2) / 2;
+    const midLng = (lng1 + lng2) / 2;
+    
+    // Calculate distance to determine curve height
+    const distance = Math.sqrt(
+        Math.pow(lat2 - lat1, 2) + 
+        Math.pow(lng2 - lng1, 2)
+    );
+    
+    // Create a nice curve height based on distance (more curve for longer flights)
+    const curveHeight = Math.min(distance * 0.2, 15);  // Max 15 degrees curve
+    
+    // Generate points along a quadratic bezier curve
+    for (let i = 0; i <= steps; i++) {{
+        const t = i / steps;
+        
+        // Quadratic bezier curve formula
+        // B(t) = (1-t)²P₀ + 2(1-t)tP₁ + t²P₂
+        const lat = (1 - t) * (1 - t) * lat1 + 
+                   2 * (1 - t) * t * (midLat + curveHeight) + 
+                   t * t * lat2;
+        
+        const lng = (1 - t) * (1 - t) * lng1 + 
+                   2 * (1 - t) * t * midLng + 
+                   t * t * lng2;
+        
+        points.push([lat, lng]);
+    }}
+    
+    return points;
 }}
 
 // Distance calculation helper
