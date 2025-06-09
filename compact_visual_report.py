@@ -348,25 +348,21 @@ function initializeTrialMap(trialLocationsData) {{
 
             try {{
                 // Initialize the Enhanced Leaflet map
-                const map = L.map('leafletMap', {{
+                window.map = L.map('leafletMap', {{
                     center: [30.0, 0.0],
                     zoom: 2,
                     maxZoom: 12,
                     minZoom: 1,
                     zoomControl: true
                 }});
-
-                // Create a custom pane for flight paths that's always on top
-                map.createPane('flightPaths');
-                map.getPane('flightPaths').style.zIndex = 650; // Above everything
-                map.getPane('flightPaths').style.pointerEvents = 'none';
-                map.getPane('flightPaths').style.overflow = 'visible';
+                map.createPane('flightPathsPane');
+                map.getPane('flightPathsPane').style.zIndex = 650;
 
                 // Add OpenStreetMap tile layer
                 L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
                     attribution: '© OpenStreetMap contributors',
                     maxZoom: 18
-                }}).addTo(map);
+                }}).addTo(window.map);
 
                 // Store references for controls
                 let flightPaths = [];
@@ -520,13 +516,13 @@ function initializeTrialMap(trialLocationsData) {{
                         const straightPath = L.polyline(
                           [[userLocation.lat, userLocation.lng], [lat, lng]],
                           {{ 
-                            pane: 'flightPaths',
                             fill: false,
                             color: '#FF0000',
                             weight: 6,
                             opacity: 1,
                             dashArray: '20,10',
-                            className: 'flight-path-animated'
+                            className: 'flight-path-animated',
+                            pane: 'flightPathsPane'
                           }}
                         ).addTo(map);
                         
@@ -590,8 +586,6 @@ function initializeTrialMap(trialLocationsData) {{
                     }}
                 `;
                 document.head.appendChild(animationStyle);
-
-                // REMOVED: Show Distances Button
 
                 // Reset View Button (modified to restart animation)
                 const resetBtn = L.DomUtil.create('button', 'map-control-btn', controlContainer);

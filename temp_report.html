@@ -760,12 +760,17 @@
 
         /* Animated Flight Path Styles */
         .flight-path-animated {
-            animation: flight-dash 3s linear infinite;
+          stroke: #ff0000 !important;
+          stroke-width: 6 !important;
+          stroke-dasharray: 20 10 !important;   /* 虚线 */
+          stroke-opacity: 1 !important;
+          vector-effect: non-scaling-stroke;    /* 缩放不变粗细 */
+          animation: flight-dash 3s linear infinite;
         }
-
+        
         @keyframes flight-dash {
-            0% { stroke-dashoffset: 0; }
-            100% { stroke-dashoffset: -40; }
+          0%   { stroke-dashoffset: 0; }
+          100% { stroke-dashoffset: -40; }
         }
 
         /* Enhanced Marker Styles */
@@ -822,6 +827,17 @@
           stroke-dasharray: 20 10 !important;
           stroke-opacity: 1 !important;
         }
+        
+        .leaflet-pane.leaflet-flightPaths-pane path.flight-path-animated {
+            stroke: #FF0000 !important;
+            stroke-width: 6px !important;
+            stroke-dasharray: 20 10 !important;
+            stroke-opacity: 1 !important;
+            visibility: visible !important;
+            display: inline !important;
+            vector-effect: non-scaling-stroke;
+            animation: flight-dash 2s linear infinite !important;
+        }
     </style>
     
 </head>
@@ -830,7 +846,7 @@
         <!-- Header -->
         <div class="header">
             <h1>🎯 Clinical Trial Matching Report</h1>
-            <p>Compact Visual Report | Generated on June 05, 2025 at 10:59 AM EST</p>
+            <p>Compact Visual Report | Generated on June 08, 2025 at 08:56 PM EST</p>
         </div>
 
         <!-- Visual Summary with Charts -->
@@ -902,12 +918,12 @@
                     <!-- Stats Boxes Row -->
                     <div class="stats-boxes-row">
                         <div class="stat-box">
-                            <div class="stat-number">1823</div>
+                            <div class="stat-number">1826</div>
                             <div class="stat-label">Trials</div>
                             <div class="stat-subtitle">Searched</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-number">1823</div>
+                            <div class="stat-number">1826</div>
                             <div class="stat-label">Qualified</div>
                             <div class="stat-subtitle">Matches</div>
                         </div>
@@ -958,47 +974,6 @@
             </div>
             <div class="trials-grid-layout">
                 
-        <div class="trial-card-grid">
-            <div class="trial-header-grid">
-                <div class="trial-title-grid">A Randomized, Open-label Phase 3 Study of Amivantamab + FOLFIRI Versus Cetuximab...</div>
-                <div class="score-badge-grid score-green-grid">86%</div>
-            </div>
-
-            <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06750094</div>
-                <div class="study-type-grid">INTERVENTIONAL</div>
-            </div>
-
-            <div class="match-indicators-grid">
-                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
-            </div>
-
-            <div class="trial-summary-grid">
-                The purpose of this study is to compare how long the participants are disease-free (progression-free survival) and and t...
-            </div>
-
-            
-            <div class="trial-location">
-                <span class="location-icon">📍</span>
-                <span><strong>Ironwood Cancer and Research Center</strong> - Chandler, Arizona</span>
-                <span class="distance-badge">Calculating...</span>
-            </div>
-        
-
-            <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06750094" class="btn-grid btn-primary-grid" target="_blank">
-                    View Details
-                </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06750094" onclick="toggleDetails('06750094')">▶ More Details</button>
-            </div>
-
-            
-            <div class="trial-details-grid" id="details-06750094" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
-                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
-            </div>
-        
-        </div>
-    
         <div class="trial-card-grid">
             <div class="trial-header-grid">
                 <div class="trial-title-grid">An Open-label, Multicenter, Single-arm Phase II Clinical Study Evaluating the Ef...</div>
@@ -1085,6 +1060,47 @@ Cohort A - To e...
     
         <div class="trial-card-grid">
             <div class="trial-header-grid">
+                <div class="trial-title-grid">A Randomized, Open-label Phase 3 Study of Amivantamab + FOLFIRI Versus Cetuximab...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06750094</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                The purpose of this study is to compare how long the participants are disease-free (progression-free survival) and and t...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Ironwood Cancer and Research Center</strong> - Chandler, Arizona</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06750094" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06750094" onclick="toggleDetails('06750094')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06750094" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
                 <div class="trial-title-grid">A Randomized, Open-label Phase 3 Study of Amivantamab and mFOLFOX6 or FOLFIRI Ve...</div>
                 <div class="score-badge-grid score-green-grid">86%</div>
             </div>
@@ -1119,47 +1135,6 @@ Cohort A - To e...
 
             
             <div class="trial-details-grid" id="details-06662786" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
-                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
-            </div>
-        
-        </div>
-    
-        <div class="trial-card-grid">
-            <div class="trial-header-grid">
-                <div class="trial-title-grid">A Phase Ib Study of Botensilimab Plus Balstilimab and Fasting-Mimicking Diet (FM...</div>
-                <div class="score-badge-grid score-green-grid">86%</div>
-            </div>
-
-            <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06336902</div>
-                <div class="study-type-grid">INTERVENTIONAL</div>
-            </div>
-
-            <div class="match-indicators-grid">
-                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
-            </div>
-
-            <div class="trial-summary-grid">
-                This phase Ib trial tests the safety, side effects, and effectiveness of botensilimab, and balstilimab in combination wi...
-            </div>
-
-            
-            <div class="trial-location">
-                <span class="location-icon">📍</span>
-                <span><strong>Los Angeles General Medical Center</strong> - Los Angeles, California</span>
-                <span class="distance-badge">Calculating...</span>
-            </div>
-        
-
-            <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06336902" class="btn-grid btn-primary-grid" target="_blank">
-                    View Details
-                </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06336902" onclick="toggleDetails('06336902')">▶ More Details</button>
-            </div>
-
-            
-            <div class="trial-details-grid" id="details-06336902" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
                 <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
             </div>
         
@@ -1249,6 +1224,47 @@ Cohort A - To e...
     
         <div class="trial-card-grid">
             <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase Ib Study of Botensilimab Plus Balstilimab and Fasting-Mimicking Diet (FM...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06336902</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                This phase Ib trial tests the safety, side effects, and effectiveness of botensilimab, and balstilimab in combination wi...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Los Angeles General Medical Center</strong> - Los Angeles, California</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06336902" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06336902" onclick="toggleDetails('06336902')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06336902" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
                 <div class="trial-title-grid">Efficacy and Safety of Triweekly Cetuximab in Combination With Capecitabine as F...</div>
                 <div class="score-badge-grid score-green-grid">86%</div>
             </div>
@@ -1283,6 +1299,41 @@ Cohort A - To e...
 
             
             <div class="trial-details-grid" id="details-05775900" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase 3, Randomized, Open-label, Multicenter Clinical Study to Evaluate the Sa...</div>
+                <div class="score-badge-grid score-green-grid">86%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06997497</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                Researchers are looking for other ways to treat locally advanced or metastatic colorectal cancer (mCRC) that is unresect...
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06997497" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06997497" onclick="toggleDetails('06997497')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06997497" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
                 <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
             </div>
         
@@ -1331,12 +1382,12 @@ Cohort A - To e...
     
         <div class="trial-card-grid">
             <div class="trial-header-grid">
-                <div class="trial-title-grid">A Phase 3, Randomized, Open-label, Multicenter Clinical Study to Evaluate the Sa...</div>
+                <div class="trial-title-grid">A Clinical Study of IX001 TCR-T In the Treatment of Advanced Pancreatic Cancer a...</div>
                 <div class="score-badge-grid score-green-grid">86%</div>
             </div>
 
             <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06997497</div>
+                <div class="nct-id-grid">NCT06487377</div>
                 <div class="study-type-grid">INTERVENTIONAL</div>
             </div>
 
@@ -1345,20 +1396,26 @@ Cohort A - To e...
             </div>
 
             <div class="trial-summary-grid">
-                Researchers are looking for other ways to treat locally advanced or metastatic colorectal cancer (mCRC) that is unresect...
+                This is a single-arm, single-center, open-label clinical study aimed at evaluating the safety and efficacy of IX001 TCR-...
             </div>
 
             
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>Shanghai Pudong Hospital</strong> - Shanghai, Shanghai</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
 
             <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06997497" class="btn-grid btn-primary-grid" target="_blank">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06487377" class="btn-grid btn-primary-grid" target="_blank">
                     View Details
                 </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06997497" onclick="toggleDetails('06997497')">▶ More Details</button>
+                <button class="btn-grid expand-btn-grid" id="btn-06487377" onclick="toggleDetails('06487377')">▶ More Details</button>
             </div>
 
             
-            <div class="trial-details-grid" id="details-06997497" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+            <div class="trial-details-grid" id="details-06487377" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
                 <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
             </div>
         
@@ -1405,47 +1462,6 @@ Cohort A - To e...
         
         </div>
     
-        <div class="trial-card-grid">
-            <div class="trial-header-grid">
-                <div class="trial-title-grid">A Clinical Study of IX001 TCR-T In the Treatment of Advanced Pancreatic Cancer a...</div>
-                <div class="score-badge-grid score-green-grid">86%</div>
-            </div>
-
-            <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06487377</div>
-                <div class="study-type-grid">INTERVENTIONAL</div>
-            </div>
-
-            <div class="match-indicators-grid">
-                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
-            </div>
-
-            <div class="trial-summary-grid">
-                This is a single-arm, single-center, open-label clinical study aimed at evaluating the safety and efficacy of IX001 TCR-...
-            </div>
-
-            
-            <div class="trial-location">
-                <span class="location-icon">📍</span>
-                <span><strong>Shanghai Pudong Hospital</strong> - Shanghai, Shanghai</span>
-                <span class="distance-badge">Calculating...</span>
-            </div>
-        
-
-            <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06487377" class="btn-grid btn-primary-grid" target="_blank">
-                    View Details
-                </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06487377" onclick="toggleDetails('06487377')">▶ More Details</button>
-            </div>
-
-            
-            <div class="trial-details-grid" id="details-06487377" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
-                <div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Cancer Match: Colorectal trial specifically designed for your diagnosis</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
-            </div>
-        
-        </div>
-    
             </div>
         </div>
     
@@ -1456,19 +1472,19 @@ Cohort A - To e...
                     <h2 style="color: #2c3e50; font-size: 1.4em; margin-bottom: 5px;">✨ Very Good Matches (60-74%)</h2>
                 </div>
                 <div class="trial-count-grid" style="background: #ffc107;">
-                    823 trials
+                    826 trials
                 </div>
             </div>
             <div class="trials-grid-layout">
                 
         <div class="trial-card-grid">
             <div class="trial-header-grid">
-                <div class="trial-title-grid">A Phase 1, Open Label, Dose Escalation of HBI-2438 in Patients With Advanced Mal...</div>
+                <div class="trial-title-grid">A Phase 1, Open-Label, Multicenter Study of INCB161734 in Participants With Adva...</div>
                 <div class="score-badge-grid score-yellow-grid">71%</div>
             </div>
 
             <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT05485974</div>
+                <div class="nct-id-grid">NCT06179160</div>
                 <div class="study-type-grid">INTERVENTIONAL</div>
             </div>
 
@@ -1477,26 +1493,26 @@ Cohort A - To e...
             </div>
 
             <div class="trial-summary-grid">
-                A Phase 1 dose escalation study in patients with advanced solid tumors harboring KRAS G12C mutation to determine the max...
+                This study is conducted to determine the safety and tolerability of INCB161734 as a single agent or in combination with ...
             </div>
 
             
             <div class="trial-location">
                 <span class="location-icon">📍</span>
-                <span><strong>California Cancer Associates for Research and Excellence, Inc. (cCare)</strong> - Encinitas, California</span>
+                <span><strong>Mayo Clinic Hospital</strong> - Phoenix, Arizona</span>
                 <span class="distance-badge">Calculating...</span>
             </div>
         
 
             <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT05485974" class="btn-grid btn-primary-grid" target="_blank">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06179160" class="btn-grid btn-primary-grid" target="_blank">
                     View Details
                 </a>
-                <button class="btn-grid expand-btn-grid" id="btn-05485974" onclick="toggleDetails('05485974')">▶ More Details</button>
+                <button class="btn-grid expand-btn-grid" id="btn-06179160" onclick="toggleDetails('06179160')">▶ More Details</button>
             </div>
 
             
-            <div class="trial-details-grid" id="details-05485974" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+            <div class="trial-details-grid" id="details-06179160" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
                 <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
             </div>
         
@@ -1538,6 +1554,47 @@ Cohort A - To e...
 
             
             <div class="trial-details-grid" id="details-04449874" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase 1, Open Label, Dose Escalation of HBI-2438 in Patients With Advanced Mal...</div>
+                <div class="score-badge-grid score-yellow-grid">71%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT05485974</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                A Phase 1 dose escalation study in patients with advanced solid tumors harboring KRAS G12C mutation to determine the max...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>California Cancer Associates for Research and Excellence, Inc. (cCare)</strong> - Encinitas, California</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT05485974" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-05485974" onclick="toggleDetails('05485974')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-05485974" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
                 <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
             </div>
         
@@ -1588,12 +1645,12 @@ Many cancer cells produce substances called antigens that are unique to each can
     
         <div class="trial-card-grid">
             <div class="trial-header-grid">
-                <div class="trial-title-grid">Phase 1/2 Study of TSN1611 in Subjects With Advanced Solid Tumors Harboring KRAS...</div>
+                <div class="trial-title-grid">A Phase 1/2 Multiple Expansion Cohort Trial of the SOS1 Inhibitor MRTX0902 in Pa...</div>
                 <div class="score-badge-grid score-yellow-grid">71%</div>
             </div>
 
             <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06385925</div>
+                <div class="nct-id-grid">NCT05578092</div>
                 <div class="study-type-grid">INTERVENTIONAL</div>
             </div>
 
@@ -1602,26 +1659,67 @@ Many cancer cells produce substances called antigens that are unique to each can
             </div>
 
             <div class="trial-summary-grid">
-                The study is a first-in-human (FIH), open-label, multi-center phase 1/2 study of TSN1611 in subjects with KRAS G12D muta...
+                This is a Phase 1/2, open-label, multicenter, study evaluating the safety, tolerability, PK, PD, and anti-tumor activity...
             </div>
 
             
             <div class="trial-location">
                 <span class="location-icon">📍</span>
-                <span><strong>MD Anderson Cancer Center</strong> - Houston, Texas</span>
+                <span><strong>Local Institution - 001-120</strong> - Colorado Springs, Colorado</span>
                 <span class="distance-badge">Calculating...</span>
             </div>
         
 
             <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06385925" class="btn-grid btn-primary-grid" target="_blank">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT05578092" class="btn-grid btn-primary-grid" target="_blank">
                     View Details
                 </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06385925" onclick="toggleDetails('06385925')">▶ More Details</button>
+                <button class="btn-grid expand-btn-grid" id="btn-05578092" onclick="toggleDetails('05578092')">▶ More Details</button>
             </div>
 
             
-            <div class="trial-details-grid" id="details-06385925" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+            <div class="trial-details-grid" id="details-05578092" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Phase 1/2 Study of LY3537982 in Patients With KRAS G12C-Mutant Advanced Solid ...</div>
+                <div class="score-badge-grid score-yellow-grid">71%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT04956640</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                The purpose of this study is to find out whether the study drug, LY3537982, is safe and effective in cancer patients who...
+            </div>
+
+            
+            <div class="trial-location">
+                <span class="location-icon">📍</span>
+                <span><strong>University of Alabama at Birmingham</strong> - Birmingham, Alabama</span>
+                <span class="distance-badge">Calculating...</span>
+            </div>
+        
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT04956640" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-04956640" onclick="toggleDetails('04956640')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-04956640" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
                 <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
             </div>
         
@@ -1670,12 +1768,12 @@ Many cancer cells produce substances called antigens that are unique to each can
     
         <div class="trial-card-grid">
             <div class="trial-header-grid">
-                <div class="trial-title-grid">A Phase 1, Open-Label, Multicenter Study of INCB161734 in Participants With Adva...</div>
+                <div class="trial-title-grid">A Phase 1, Open-Label, Multicenter Study of INCB186748 in Participants With Adva...</div>
                 <div class="score-badge-grid score-yellow-grid">71%</div>
             </div>
 
             <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06179160</div>
+                <div class="nct-id-grid">NCT06818812</div>
                 <div class="study-type-grid">INTERVENTIONAL</div>
             </div>
 
@@ -1684,26 +1782,26 @@ Many cancer cells produce substances called antigens that are unique to each can
             </div>
 
             <div class="trial-summary-grid">
-                This study is conducted to determine the safety and tolerability of INCB161734 as a single agent or in combination with ...
+                The purpose of this study is to evaluate INCB186748 in Participants With Advanced or Metastatic Solid Tumors With KRAS G...
             </div>
 
             
             <div class="trial-location">
                 <span class="location-icon">📍</span>
-                <span><strong>Mayo Clinic Hospital</strong> - Phoenix, Arizona</span>
+                <span><strong>UCLA Healthcare Hematology-Oncology</strong> - Santa Monica, California</span>
                 <span class="distance-badge">Calculating...</span>
             </div>
         
 
             <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06179160" class="btn-grid btn-primary-grid" target="_blank">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06818812" class="btn-grid btn-primary-grid" target="_blank">
                     View Details
                 </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06179160" onclick="toggleDetails('06179160')">▶ More Details</button>
+                <button class="btn-grid expand-btn-grid" id="btn-06818812" onclick="toggleDetails('06818812')">▶ More Details</button>
             </div>
 
             
-            <div class="trial-details-grid" id="details-06179160" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+            <div class="trial-details-grid" id="details-06818812" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
                 <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
             </div>
         
@@ -1711,94 +1809,12 @@ Many cancer cells produce substances called antigens that are unique to each can
     
         <div class="trial-card-grid">
             <div class="trial-header-grid">
-                <div class="trial-title-grid">A Phase 1/2 Multiple Expansion Cohort Trial of the SOS1 Inhibitor MRTX0902 in Pa...</div>
+                <div class="trial-title-grid">Phase 1/2 Study of TSN1611 in Subjects With Advanced Solid Tumors Harboring KRAS...</div>
                 <div class="score-badge-grid score-yellow-grid">71%</div>
             </div>
 
             <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT05578092</div>
-                <div class="study-type-grid">INTERVENTIONAL</div>
-            </div>
-
-            <div class="match-indicators-grid">
-                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
-            </div>
-
-            <div class="trial-summary-grid">
-                This is a Phase 1/2, open-label, multicenter, study evaluating the safety, tolerability, PK, PD, and anti-tumor activity...
-            </div>
-
-            
-            <div class="trial-location">
-                <span class="location-icon">📍</span>
-                <span><strong>Local Institution - 001-120</strong> - Colorado Springs, Colorado</span>
-                <span class="distance-badge">Calculating...</span>
-            </div>
-        
-
-            <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT05578092" class="btn-grid btn-primary-grid" target="_blank">
-                    View Details
-                </a>
-                <button class="btn-grid expand-btn-grid" id="btn-05578092" onclick="toggleDetails('05578092')">▶ More Details</button>
-            </div>
-
-            
-            <div class="trial-details-grid" id="details-05578092" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
-                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
-            </div>
-        
-        </div>
-    
-        <div class="trial-card-grid">
-            <div class="trial-header-grid">
-                <div class="trial-title-grid">An Open-label Phase 1 Study of ASP4396 in Participants With Locally Advanced (Un...</div>
-                <div class="score-badge-grid score-yellow-grid">71%</div>
-            </div>
-
-            <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06364696</div>
-                <div class="study-type-grid">INTERVENTIONAL</div>
-            </div>
-
-            <div class="match-indicators-grid">
-                <span class="match-tag-grid gene">Gene Match</span><span class="match-tag-grid ecog">ECOG OK</span>
-            </div>
-
-            <div class="trial-summary-grid">
-                Genes contain genetic code which tell the body which proteins to make. Some types of cancer are caused by changes, or mu...
-            </div>
-
-            
-            <div class="trial-location">
-                <span class="location-icon">📍</span>
-                <span><strong>University of Kansas Cancer Center</strong> - Westwood, Kansas</span>
-                <span class="distance-badge">Calculating...</span>
-            </div>
-        
-
-            <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06364696" class="btn-grid btn-primary-grid" target="_blank">
-                    View Details
-                </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06364696" onclick="toggleDetails('06364696')">▶ More Details</button>
-            </div>
-
-            
-            <div class="trial-details-grid" id="details-06364696" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
-                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
-            </div>
-        
-        </div>
-    
-        <div class="trial-card-grid">
-            <div class="trial-header-grid">
-                <div class="trial-title-grid">A Phase I Clinical Study to Evaluate the Safety, Tolerability, Pharmacokinetics,...</div>
-                <div class="score-badge-grid score-yellow-grid">71%</div>
-            </div>
-
-            <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06403735</div>
+                <div class="nct-id-grid">NCT06385925</div>
                 <div class="study-type-grid">INTERVENTIONAL</div>
             </div>
 
@@ -1813,14 +1829,14 @@ Many cancer cells produce substances called antigens that are unique to each can
             
 
             <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06403735" class="btn-grid btn-primary-grid" target="_blank">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06385925" class="btn-grid btn-primary-grid" target="_blank">
                     View Details
                 </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06403735" onclick="toggleDetails('06403735')">▶ More Details</button>
+                <button class="btn-grid expand-btn-grid" id="btn-06385925" onclick="toggleDetails('06385925')">▶ More Details</button>
             </div>
 
             
-            <div class="trial-details-grid" id="details-06403735" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+            <div class="trial-details-grid" id="details-06385925" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
                 <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
             </div>
         
@@ -1828,12 +1844,12 @@ Many cancer cells produce substances called antigens that are unique to each can
     
         <div class="trial-card-grid">
             <div class="trial-header-grid">
-                <div class="trial-title-grid">Phase 1/1b, Multicenter, Open-Label, Study of RMC 9805 in Participants With Adva...</div>
+                <div class="trial-title-grid">A Phase 1/1b Multiple Cohort Trial of ALTA3263 in Patients With Advanced Solid T...</div>
                 <div class="score-badge-grid score-yellow-grid">71%</div>
             </div>
 
             <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06040541</div>
+                <div class="nct-id-grid">NCT06835569</div>
                 <div class="study-type-grid">INTERVENTIONAL</div>
             </div>
 
@@ -1848,14 +1864,14 @@ Many cancer cells produce substances called antigens that are unique to each can
             
 
             <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06040541" class="btn-grid btn-primary-grid" target="_blank">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06835569" class="btn-grid btn-primary-grid" target="_blank">
                     View Details
                 </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06040541" onclick="toggleDetails('06040541')">▶ More Details</button>
+                <button class="btn-grid expand-btn-grid" id="btn-06835569" onclick="toggleDetails('06835569')">▶ More Details</button>
             </div>
 
             
-            <div class="trial-details-grid" id="details-06040541" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+            <div class="trial-details-grid" id="details-06835569" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
                 <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.8em;">🎯 Perfect Genetic Match: KRAS targeted therapy trial</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
             </div>
         
@@ -1876,6 +1892,76 @@ Many cancer cells produce substances called antigens that are unique to each can
             </div>
             <div class="trials-grid-layout">
                 
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">A Platform Study of RAS(ON) Inhibitors in Patients With Gastrointestinal Solid T...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06445062</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06445062" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06445062" onclick="toggleDetails('06445062')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06445062" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Phase 1, First-in-Human, Multicenter, Open-Label Study to Evaluate the Safety, T...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06026410</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06026410" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06026410" onclick="toggleDetails('06026410')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06026410" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
         <div class="trial-card-grid">
             <div class="trial-header-grid">
                 <div class="trial-title-grid">A First-in-Human (FiH) Study of IK-595, an Oral Dual MEK/RAF Inhibitor, in Patie...</div>
@@ -1948,76 +2034,6 @@ Many cancer cells produce substances called antigens that are unique to each can
     
         <div class="trial-card-grid">
             <div class="trial-header-grid">
-                <div class="trial-title-grid">A Platform Study of RAS(ON) Inhibitors in Patients With Gastrointestinal Solid T...</div>
-                <div class="score-badge-grid score-orange-grid">54%</div>
-            </div>
-
-            <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06445062</div>
-                <div class="study-type-grid">INTERVENTIONAL</div>
-            </div>
-
-            <div class="match-indicators-grid">
-                <span class="match-tag-grid ecog">ECOG OK</span>
-            </div>
-
-            <div class="trial-summary-grid">
-                No summary available.
-            </div>
-
-            
-
-            <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06445062" class="btn-grid btn-primary-grid" target="_blank">
-                    View Details
-                </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06445062" onclick="toggleDetails('06445062')">▶ More Details</button>
-            </div>
-
-            
-            <div class="trial-details-grid" id="details-06445062" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
-                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
-            </div>
-        
-        </div>
-    
-        <div class="trial-card-grid">
-            <div class="trial-header-grid">
-                <div class="trial-title-grid">A PHASE 1 OPEN-LABEL STUDY OF PF-07985045 AS A SINGLE-AGENT AND IN COMBINATION W...</div>
-                <div class="score-badge-grid score-orange-grid">54%</div>
-            </div>
-
-            <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06704724</div>
-                <div class="study-type-grid">INTERVENTIONAL</div>
-            </div>
-
-            <div class="match-indicators-grid">
-                <span class="match-tag-grid ecog">ECOG OK</span>
-            </div>
-
-            <div class="trial-summary-grid">
-                No summary available.
-            </div>
-
-            
-
-            <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06704724" class="btn-grid btn-primary-grid" target="_blank">
-                    View Details
-                </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06704724" onclick="toggleDetails('06704724')">▶ More Details</button>
-            </div>
-
-            
-            <div class="trial-details-grid" id="details-06704724" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
-                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
-            </div>
-        
-        </div>
-    
-        <div class="trial-card-grid">
-            <div class="trial-header-grid">
                 <div class="trial-title-grid">Carbon Nanoparticle-Loaded Iron [CNSI-Fe(II)] Dose Escalation Study for the Trea...</div>
                 <div class="score-badge-grid score-orange-grid">54%</div>
             </div>
@@ -2053,12 +2069,12 @@ Many cancer cells produce substances called antigens that are unique to each can
     
         <div class="trial-card-grid">
             <div class="trial-header-grid">
-                <div class="trial-title-grid">Phase 1, First-in-Human, Multicenter, Open-Label Study to Evaluate the Safety, T...</div>
+                <div class="trial-title-grid">A PHASE 1 OPEN-LABEL STUDY OF PF-07985045 AS A SINGLE-AGENT AND IN COMBINATION W...</div>
                 <div class="score-badge-grid score-orange-grid">54%</div>
             </div>
 
             <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06026410</div>
+                <div class="nct-id-grid">NCT06704724</div>
                 <div class="study-type-grid">INTERVENTIONAL</div>
             </div>
 
@@ -2073,49 +2089,14 @@ Many cancer cells produce substances called antigens that are unique to each can
             
 
             <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06026410" class="btn-grid btn-primary-grid" target="_blank">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06704724" class="btn-grid btn-primary-grid" target="_blank">
                     View Details
                 </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06026410" onclick="toggleDetails('06026410')">▶ More Details</button>
+                <button class="btn-grid expand-btn-grid" id="btn-06704724" onclick="toggleDetails('06704724')">▶ More Details</button>
             </div>
 
             
-            <div class="trial-details-grid" id="details-06026410" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
-                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
-            </div>
-        
-        </div>
-    
-        <div class="trial-card-grid">
-            <div class="trial-header-grid">
-                <div class="trial-title-grid">Phase I Study of Autologous CD8+ and CD4+ Engineered T Cell Receptor T Cells in ...</div>
-                <div class="score-badge-grid score-orange-grid">54%</div>
-            </div>
-
-            <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06105021</div>
-                <div class="study-type-grid">INTERVENTIONAL</div>
-            </div>
-
-            <div class="match-indicators-grid">
-                <span class="match-tag-grid ecog">ECOG OK</span>
-            </div>
-
-            <div class="trial-summary-grid">
-                No summary available.
-            </div>
-
-            
-
-            <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06105021" class="btn-grid btn-primary-grid" target="_blank">
-                    View Details
-                </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06105021" onclick="toggleDetails('06105021')">▶ More Details</button>
-            </div>
-
-            
-            <div class="trial-details-grid" id="details-06105021" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+            <div class="trial-details-grid" id="details-06704724" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
                 <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
             </div>
         
@@ -2186,6 +2167,41 @@ Many cancer cells produce substances called antigens that are unique to each can
 
             
             <div class="trial-details-grid" id="details-06047379" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">Phase I Study of Autologous CD8+ and CD4+ Engineered T Cell Receptor T Cells in ...</div>
+                <div class="score-badge-grid score-orange-grid">54%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06105021</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06105021" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06105021" onclick="toggleDetails('06105021')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06105021" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
                 <div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Broad Eligibility: Pan-cancer trial accepts multiple cancer types</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
             </div>
         
@@ -2348,41 +2364,6 @@ Many cancer cells produce substances called antigens that are unique to each can
     
         <div class="trial-card-grid">
             <div class="trial-header-grid">
-                <div class="trial-title-grid">The Ku Ola Project</div>
-                <div class="score-badge-grid score-red-grid">44%</div>
-            </div>
-
-            <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06964633</div>
-                <div class="study-type-grid">INTERVENTIONAL</div>
-            </div>
-
-            <div class="match-indicators-grid">
-                <span class="match-tag-grid ecog">ECOG OK</span>
-            </div>
-
-            <div class="trial-summary-grid">
-                No summary available.
-            </div>
-
-            
-
-            <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06964633" class="btn-grid btn-primary-grid" target="_blank">
-                    View Details
-                </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06964633" onclick="toggleDetails('06964633')">▶ More Details</button>
-            </div>
-
-            
-            <div class="trial-details-grid" id="details-06964633" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
-                <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
-            </div>
-        
-        </div>
-    
-        <div class="trial-card-grid">
-            <div class="trial-header-grid">
                 <div class="trial-title-grid">Intérêt de la rééducation érectile précoce Par Sildénafil après radiothérapie et...</div>
                 <div class="score-badge-grid score-red-grid">44%</div>
             </div>
@@ -2411,6 +2392,41 @@ Many cancer cells produce substances called antigens that are unique to each can
 
             
             <div class="trial-details-grid" id="details-06123156" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">The Ku Ola Project</div>
+                <div class="score-badge-grid score-red-grid">44%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06964633</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06964633" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06964633" onclick="toggleDetails('06964633')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06964633" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
                 <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
             </div>
         
@@ -2453,41 +2469,6 @@ Many cancer cells produce substances called antigens that are unique to each can
     
         <div class="trial-card-grid">
             <div class="trial-header-grid">
-                <div class="trial-title-grid">The Effect of Naldemedine on Opioid-induced Bowel Dysfunction. An Investigator I...</div>
-                <div class="score-badge-grid score-red-grid">42%</div>
-            </div>
-
-            <div class="trial-meta-grid">
-                <div class="nct-id-grid">NCT06334198</div>
-                <div class="study-type-grid">INTERVENTIONAL</div>
-            </div>
-
-            <div class="match-indicators-grid">
-                <span class="match-tag-grid ecog">ECOG OK</span>
-            </div>
-
-            <div class="trial-summary-grid">
-                No summary available.
-            </div>
-
-            
-
-            <div class="action-buttons-grid">
-                <a href="https://clinicaltrials.gov/ct2/show/NCT06334198" class="btn-grid btn-primary-grid" target="_blank">
-                    View Details
-                </a>
-                <button class="btn-grid expand-btn-grid" id="btn-06334198" onclick="toggleDetails('06334198')">▶ More Details</button>
-            </div>
-
-            
-            <div class="trial-details-grid" id="details-06334198" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
-                <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
-            </div>
-        
-        </div>
-    
-        <div class="trial-card-grid">
-            <div class="trial-header-grid">
                 <div class="trial-title-grid">SCREEN-HPV: Blood Biomarkers Based Screening for HPV-driven OPC</div>
                 <div class="score-badge-grid score-red-grid">42%</div>
             </div>
@@ -2521,6 +2502,41 @@ Many cancer cells produce substances called antigens that are unique to each can
         
         </div>
     
+        <div class="trial-card-grid">
+            <div class="trial-header-grid">
+                <div class="trial-title-grid">The Effect of Naldemedine on Opioid-induced Bowel Dysfunction. An Investigator I...</div>
+                <div class="score-badge-grid score-red-grid">42%</div>
+            </div>
+
+            <div class="trial-meta-grid">
+                <div class="nct-id-grid">NCT06334198</div>
+                <div class="study-type-grid">INTERVENTIONAL</div>
+            </div>
+
+            <div class="match-indicators-grid">
+                <span class="match-tag-grid ecog">ECOG OK</span>
+            </div>
+
+            <div class="trial-summary-grid">
+                No summary available.
+            </div>
+
+            
+
+            <div class="action-buttons-grid">
+                <a href="https://clinicaltrials.gov/ct2/show/NCT06334198" class="btn-grid btn-primary-grid" target="_blank">
+                    View Details
+                </a>
+                <button class="btn-grid expand-btn-grid" id="btn-06334198" onclick="toggleDetails('06334198')">▶ More Details</button>
+            </div>
+
+            
+            <div class="trial-details-grid" id="details-06334198" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                <div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Cancer type match unclear - requires detailed eligibility review</div><div style="margin-bottom: 6px; padding: 4px; background: #fff3cd; color: #856404; border-radius: 4px; font-size: 0.8em;">⚠️ Non-targeted trial - KRAS status may not be primary selection criteria</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Disease stage considered in matching</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Excellent Performance Status: ECOG 1 qualifies for most trials</div><div style="margin-bottom: 6px; padding: 4px; background: #d4edda; color: #155724; border-radius: 4px; font-size: 0.8em;">✅ Treatment Context: Multiple treatment lines - may limit some options, No recent surgery - good trial safety profile</div>
+            </div>
+        
+        </div>
+    
             </div>
         </div>
     
@@ -2530,7 +2546,7 @@ Many cancer cells produce substances called antigens that are unique to each can
             <h3>🤝 Clinical Trial Support</h3>
             <p><strong>Support:</strong> 1-800-TRIALS | <strong>Email:</strong> support@matchreport.com</p>
             <p style="font-size: 0.9em; opacity: 0.8; margin-top: 10px;">
-                Report ID: MR-20250605105919 | Generated: June 05, 2025 at 10:59 AM EST
+                Report ID: MR-20250608205616 | Generated: June 08, 2025 at 08:56 PM EST
             </p>
         </div>
     </div>
@@ -2539,8 +2555,8 @@ Many cancer cells produce substances called antigens that are unique to each can
         // Wait for DOM to be fully loaded before initializing charts
         document.addEventListener('DOMContentLoaded', function() {
             // Convert data for JavaScript
-            const matchData = {"spotlight": {"count": 12, "label": "High-Priority", "subtitle": "Matches Found!"}, "other_matches": {"labels": ["Very Good", "Good Potential", "Needs Review"], "data": [823, 980, 8], "colors": ["#ffc107", "#fd7e14", "#dc3545"], "total_label": "Match Quality Distribution (1811 total)"}, "stats_boxes": {"total_searched": {"count": 1823, "label": "Trials", "subtitle": "Searched"}, "qualified_matches": {"count": 1823, "label": "Qualified", "subtitle": "Matches"}, "best_match": {"count": "86%", "label": "Best", "subtitle": "Match"}}, "total": 1823, "total_other": 1811};
-            const trialLocationsData = {"user_location": {"name": "New York, NY", "lat": 40.7128, "lng": -74.006}, "trial_locations": [{"nct_id": "NCT06750094", "facility_name": "Ironwood Cancer and Research Center", "city": "Chandler", "state": "Arizona", "country": "United States", "display_name": "Chandler, Arizona", "score": 86, "lat": 33.30616, "lng": -111.84125}, {"nct_id": "NCT06959589", "facility_name": "The Second Affiliated Hospital, School of Medicine, Zhejiang University", "city": "Hangzhou", "state": "Zhejiang", "country": "China", "display_name": "Hangzhou, Zhejiang", "score": 86, "lat": 30.29365, "lng": 120.16142}, {"nct_id": "NCT06411691", "facility_name": "Sidney Kimmel Comprehensive Cancer Center", "city": "Baltimore", "state": "Maryland", "country": "United States", "display_name": "Baltimore, Maryland", "score": 86, "lat": 39.29038, "lng": -76.61219}, {"nct_id": "NCT06662786", "facility_name": "St. Bernard's Medical Center", "city": "Jonesboro", "state": "Arkansas", "country": "United States", "display_name": "Jonesboro, Arkansas", "score": 86, "lat": 35.8423, "lng": -90.70428}, {"nct_id": "NCT06336902", "facility_name": "Los Angeles General Medical Center", "city": "Los Angeles", "state": "California", "country": "United States", "display_name": "Los Angeles, California", "score": 86, "lat": 34.05223, "lng": -118.24368}, {"nct_id": "NCT06838338", "facility_name": "Beijing Cancer Hospital", "city": "Beijing", "state": "Beijing", "country": "China", "display_name": "Beijing, Beijing", "score": 86, "lat": 39.9075, "lng": 116.39723}, {"nct_id": "NCT06252649", "facility_name": "Ironwood Cancer and Research Centers Scottsdale", "city": "Chandler", "state": "Arizona", "country": "United States", "display_name": "Chandler, Arizona", "score": 86, "lat": 33.30616, "lng": -111.84125}, {"nct_id": "NCT05775900", "facility_name": "The Sixth Affiliated Hospital of Sun Yat-sen University", "city": "Guangzhou", "state": "Guangdong", "country": "China", "display_name": "Guangzhou, Guangdong", "score": 86, "lat": 23.11667, "lng": 113.25}, {"nct_id": "NCT04117087", "facility_name": "Sidney Kimmel Comprehensive Cancer Center", "city": "Baltimore", "state": "Maryland", "country": "United States", "display_name": "Baltimore, Maryland", "score": 86, "lat": 39.29038, "lng": -76.61219}, {"nct_id": "NCT06412198", "facility_name": "Massachusetts General Hospital Cancer Center", "city": "Boston", "state": "Massachusetts", "country": "United States", "display_name": "Boston, Massachusetts", "score": 86, "lat": 42.35843, "lng": -71.05977}, {"nct_id": "NCT06487377", "facility_name": "Shanghai Pudong Hospital", "city": "Shanghai", "state": "Shanghai", "country": "China", "display_name": "Shanghai, Shanghai", "score": 86, "lat": 31.22222, "lng": 121.45806}], "total_count": 11};
+            const matchData = {"spotlight": {"count": 12, "label": "High-Priority", "subtitle": "Matches Found!"}, "other_matches": {"labels": ["Very Good", "Good Potential", "Needs Review"], "data": [826, 980, 8], "colors": ["#ffc107", "#fd7e14", "#dc3545"], "total_label": "Match Quality Distribution (1814 total)"}, "stats_boxes": {"total_searched": {"count": 1826, "label": "Trials", "subtitle": "Searched"}, "qualified_matches": {"count": 1826, "label": "Qualified", "subtitle": "Matches"}, "best_match": {"count": "86%", "label": "Best", "subtitle": "Match"}}, "total": 1826, "total_other": 1814};
+            const trialLocationsData = {"user_location": {"name": "New York, NY", "lat": 40.7128, "lng": -74.006}, "trial_locations": [{"nct_id": "NCT06959589", "facility_name": "The Second Affiliated Hospital, School of Medicine, Zhejiang University", "city": "Hangzhou", "state": "Zhejiang", "country": "China", "display_name": "Hangzhou, Zhejiang", "score": 86, "lat": 30.29365, "lng": 120.16142}, {"nct_id": "NCT06411691", "facility_name": "Sidney Kimmel Comprehensive Cancer Center", "city": "Baltimore", "state": "Maryland", "country": "United States", "display_name": "Baltimore, Maryland", "score": 86, "lat": 39.29038, "lng": -76.61219}, {"nct_id": "NCT06750094", "facility_name": "Ironwood Cancer and Research Center", "city": "Chandler", "state": "Arizona", "country": "United States", "display_name": "Chandler, Arizona", "score": 86, "lat": 33.30616, "lng": -111.84125}, {"nct_id": "NCT06662786", "facility_name": "St. Bernard's Medical Center", "city": "Jonesboro", "state": "Arkansas", "country": "United States", "display_name": "Jonesboro, Arkansas", "score": 86, "lat": 35.8423, "lng": -90.70428}, {"nct_id": "NCT06838338", "facility_name": "Beijing Cancer Hospital", "city": "Beijing", "state": "Beijing", "country": "China", "display_name": "Beijing, Beijing", "score": 86, "lat": 39.9075, "lng": 116.39723}, {"nct_id": "NCT06252649", "facility_name": "Ironwood Cancer and Research Centers Scottsdale", "city": "Chandler", "state": "Arizona", "country": "United States", "display_name": "Chandler, Arizona", "score": 86, "lat": 33.30616, "lng": -111.84125}, {"nct_id": "NCT06336902", "facility_name": "Los Angeles General Medical Center", "city": "Los Angeles", "state": "California", "country": "United States", "display_name": "Los Angeles, California", "score": 86, "lat": 34.05223, "lng": -118.24368}, {"nct_id": "NCT05775900", "facility_name": "The Sixth Affiliated Hospital of Sun Yat-sen University", "city": "Guangzhou", "state": "Guangdong", "country": "China", "display_name": "Guangzhou, Guangdong", "score": 86, "lat": 23.11667, "lng": 113.25}, {"nct_id": "NCT04117087", "facility_name": "Sidney Kimmel Comprehensive Cancer Center", "city": "Baltimore", "state": "Maryland", "country": "United States", "display_name": "Baltimore, Maryland", "score": 86, "lat": 39.29038, "lng": -76.61219}, {"nct_id": "NCT06487377", "facility_name": "Shanghai Pudong Hospital", "city": "Shanghai", "state": "Shanghai", "country": "China", "display_name": "Shanghai, Shanghai", "score": 86, "lat": 31.22222, "lng": 121.45806}, {"nct_id": "NCT06412198", "facility_name": "Massachusetts General Hospital Cancer Center", "city": "Boston", "state": "Massachusetts", "country": "United States", "display_name": "Boston, Massachusetts", "score": 86, "lat": 42.35843, "lng": -71.05977}], "total_count": 11};
 
             console.log('Match data loaded:', matchData);
             console.log('Trial locations data loaded:', trialLocationsData);
@@ -2698,25 +2714,21 @@ function initializeTrialMap(trialLocationsData) {
 
             try {
                 // Initialize the Enhanced Leaflet map
-                const map = L.map('leafletMap', {
+                window.map = L.map('leafletMap', {
                     center: [30.0, 0.0],
                     zoom: 2,
                     maxZoom: 12,
                     minZoom: 1,
                     zoomControl: true
                 });
-
-                // Create a custom pane for flight paths that's always on top
-                map.createPane('flightPaths');
-                map.getPane('flightPaths').style.zIndex = 650; // Above everything
-                map.getPane('flightPaths').style.pointerEvents = 'none';
-                map.getPane('flightPaths').style.overflow = 'visible';
+                map.createPane('flightPathsPane');
+                map.getPane('flightPathsPane').style.zIndex = 650;
 
                 // Add OpenStreetMap tile layer
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '© OpenStreetMap contributors',
                     maxZoom: 18
-                }).addTo(map);
+                }).addTo(window.map);
 
                 // Store references for controls
                 let flightPaths = [];
@@ -2870,13 +2882,13 @@ function initializeTrialMap(trialLocationsData) {
                         const straightPath = L.polyline(
                           [[userLocation.lat, userLocation.lng], [lat, lng]],
                           { 
-                            pane: 'flightPaths',
                             fill: false,
                             color: '#FF0000',
                             weight: 6,
                             opacity: 1,
                             dashArray: '20,10',
-                            className: 'flight-path-animated'
+                            className: 'flight-path-animated',
+                            pane: 'flightPathsPane'
                           }
                         ).addTo(map);
                         
@@ -2940,8 +2952,6 @@ function initializeTrialMap(trialLocationsData) {
                     }
                 `;
                 document.head.appendChild(animationStyle);
-
-                // REMOVED: Show Distances Button
 
                 // Reset View Button (modified to restart animation)
                 const resetBtn = L.DomUtil.create('button', 'map-control-btn', controlContainer);

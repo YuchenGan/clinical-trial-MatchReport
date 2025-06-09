@@ -755,12 +755,17 @@ def get_all_styles() -> str:
 
         /* Animated Flight Path Styles */
         .flight-path-animated {
-            animation: flight-dash 3s linear infinite;
+          stroke: #ff0000 !important;
+          stroke-width: 6 !important;
+          stroke-dasharray: 20 10 !important;   /* 虚线 */
+          stroke-opacity: 1 !important;
+          vector-effect: non-scaling-stroke;    /* 缩放不变粗细 */
+          animation: flight-dash 3s linear infinite;
         }
-
+        
         @keyframes flight-dash {
-            0% { stroke-dashoffset: 0; }
-            100% { stroke-dashoffset: -40; }
+          0%   { stroke-dashoffset: 0; }
+          100% { stroke-dashoffset: -40; }
         }
 
         /* Enhanced Marker Styles */
@@ -816,6 +821,17 @@ def get_all_styles() -> str:
           stroke-width: 6 !important;
           stroke-dasharray: 20 10 !important;
           stroke-opacity: 1 !important;
+        }
+        
+        .leaflet-pane.leaflet-flightPaths-pane path.flight-path-animated {
+            stroke: #FF0000 !important;
+            stroke-width: 6px !important;
+            stroke-dasharray: 20 10 !important;
+            stroke-opacity: 1 !important;
+            visibility: visible !important;
+            display: inline !important;
+            vector-effect: non-scaling-stroke;
+            animation: flight-dash 2s linear infinite !important;
         }
     </style>
     """
