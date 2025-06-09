@@ -118,26 +118,12 @@ def generate_trial_locations_data(categorized_results: Dict, user_input: Questio
     if user_input:
         user_location = getattr(user_input, 'current_location', 'New York, NY')
         # Parse user location for coordinates (simplified)
-        if "New York" in user_location:
+        location_coords = get_coordinates_for_location(user_location)
+        if location_coords:
+            user_lat, user_lng = location_coords
+        else:
+            # Default to New York if location not found
             user_lat, user_lng = 40.7128, -74.0060
-        elif "Los Angeles" in user_location:
-            user_lat, user_lng = 34.0522, -118.2437
-        elif "Chicago" in user_location:
-            user_lat, user_lng = 41.8781, -87.6298
-        elif "Boston" in user_location:
-            user_lat, user_lng = 42.3601, -71.0589
-        elif "Philadelphia" in user_location:
-            user_lat, user_lng = 39.9526, -75.1652
-        elif "Atlanta" in user_location:
-            user_lat, user_lng = 33.7490, -84.3880
-        elif "Houston" in user_location:
-            user_lat, user_lng = 29.7604, -95.3698
-        elif "Seattle" in user_location:
-            user_lat, user_lng = 47.6062, -122.3321
-        elif "Denver" in user_location:
-            user_lat, user_lng = 39.7392, -104.9903
-        elif "Miami" in user_location:
-            user_lat, user_lng = 25.7617, -80.1918
 
     # Extract ONLY high-priority trials from real results
     high_priority_trials = categorized_results.get("high_priority", [])
@@ -165,7 +151,7 @@ def generate_trial_locations_data(categorized_results: Dict, user_input: Questio
         trial_locations = trial.get("locations", [])
 
         if trial_locations and len(trial_locations) > 0:
-            # Use the first location from the trial
+            # Use ONLY the first location from the trial (not all locations)
             location = trial_locations[0]
             facility = location.get("facility", {})
             address = facility.get("address", {})
@@ -176,7 +162,7 @@ def generate_trial_locations_data(categorized_results: Dict, user_input: Questio
             state = address.get("state", "")
             country = address.get("country", "USA")
 
-            # Get coordinates
+            # Get coordinates - keeping the original simple logic
             lat = address.get("latitude")
             lng = address.get("longitude")
 
@@ -214,6 +200,9 @@ def generate_trial_locations_data(categorized_results: Dict, user_input: Questio
             "location_count_text": "No mappable trial locations found",
             "message": "High-priority trials found, but location data unavailable for mapping"
         }
+
+    # Sort locations by score (highest first)
+    locations.sort(key=lambda x: x.get('score', 0), reverse=True)
 
     return {
         "user_location": {
